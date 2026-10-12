@@ -3,1711 +3,3152 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#10231f">
+<meta name="theme-color" content="#6366f1">
 <link rel="manifest" href="manifest.json">
-<title>Daily Health, Fitness & Wellness Tracker</title>
+<title>Goal OS — Personal Goal Tracker & Developer OS</title>
 <style>
-:root{
-  color-scheme: light;
-  --bg: #f4f7f4;
+:root {
+  --bg: #f8fafc;
   --card: #ffffff;
-  --card-sub: #f9fbf9;
-  --ink: #172522;
-  --muted: #64736e;
-  --line: #e0e8e3;
-  --green: #18765b;
-  --green2: #dff3e9;
-  --amber: #fff3d5;
-  --amber-ink: #775202;
-  --blue: #0277bd;
-  --blue2: #e1f5fe;
-  --red: #fff0ee;
-  --red-ink: #8a241c;
-  --shadow: 0 8px 28px #183b2b0b;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --nav: #1e293b;
+  --accent: #6366f1;
+  --accent-soft: #eef2ff;
+  --green: #10b981;
+  --green-soft: #ecfdf5;
+  --orange: #f59e0b;
+  --orange-soft: #fffbeb;
+  --red: #ef4444;
+  --red-soft: #fef2f2;
+  --blue: #0284c7;
+  --blue-soft: #f0f9ff;
+  --purple: #a855f7;
+  --purple-soft: #faf5ff;
+  --shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  --modal-bg: rgba(15, 23, 42, 0.55);
 }
 
-[data-theme="dark"]{
-  color-scheme: dark;
-  --bg: #0c1613;
-  --card: #13231e;
-  --card-sub: #172b25;
-  --ink: #e5eee9;
-  --muted: #889e96;
-  --line: #1e3830;
-  --green: #23916d;
-  --green2: #183d31;
-  --amber: #2b210c;
-  --amber-ink: #f5cb6c;
-  --blue: #29b6f6;
-  --blue2: #0f2d3a;
-  --red: #2d1310;
-  --red-ink: #ff9b94;
-  --shadow: 0 8px 28px #00000044;
+[data-theme="dark"] {
+  --bg: #090d16;
+  --card: #131c2e;
+  --ink: #f1f5f9;
+  --muted: #94a3b8;
+  --line: #1e293b;
+  --nav: #0f172a;
+  --accent: #818cf8;
+  --accent-soft: rgba(99, 102, 241, 0.15);
+  --green: #34d399;
+  --green-soft: rgba(16, 185, 129, 0.15);
+  --orange: #fbbf24;
+  --orange-soft: rgba(245, 158, 11, 0.15);
+  --red: #f87171;
+  --red-soft: rgba(239, 68, 68, 0.15);
+  --blue: #38bdf8;
+  --blue-soft: rgba(2, 132, 199, 0.15);
+  --purple: #c084fc;
+  --purple-soft: rgba(168, 85, 247, 0.15);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --modal-bg: rgba(0, 0, 0, 0.75);
 }
 
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;transition:background .2s,color .2s}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.wrap{max-width:1080px;margin:auto;padding:24px 16px 56px}
-.hero{background:#102b24;color:#fff;border-radius:24px;padding:26px;display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
-.hero-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.75rem;color:#a9d9c6;font-weight:800}
-.streak-badge{background:#e27d24;color:#fff;font-size:.78rem;font-weight:800;padding:3px 10px;border-radius:99px;display:inline-flex;align-items:center;gap:4px}
-.theme-btn{border:1px solid #42675b;background:#183c32;color:#fff;border-radius:10px;padding:6px 12px;font-size:.85rem;display:inline-flex;align-items:center;gap:6px}
-.hero h1{margin:6px 0 4px;font-size:clamp(1.8rem,5vw,2.5rem);line-height:1.15}
-.hero p{margin:8px 0 0;color:#d2e3dc;max-width:650px;font-size:.95rem}
-.datebox{min-width:220px;display:flex;flex-direction:column;gap:5px}
-.datebox label{font-size:.8rem;color:#d2e3dc;font-weight:600}
-.datebox input{width:100%;padding:9px 10px;border:1px solid #42675b;background:#183c32;color:#fff;border-radius:10px}
-.date-nav{display:flex;gap:6px;margin-top:4px}
-.date-nav .btn{padding:5px 8px;font-size:.8rem;flex:1;text-align:center}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0}
-.stat,.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
-.stat{padding:16px}
-.stat .label{font-size:.8rem;color:var(--muted);font-weight:600}
-.stat .value{font-size:1.75rem;font-weight:800;letter-spacing:-.04em;margin:4px 0;line-height:1.2}
-.stat small{color:var(--muted);font-size:.8rem;display:block}
-.layout{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.card{padding:20px;min-width:0}
-.card.full{grid-column:1/-1}
-.card h2{font-size:1.2rem;margin:0 0 4px;letter-spacing:-.02em;display:flex;align-items:center;justify-content:space-between;gap:6px}
-.sub{color:var(--muted);font-size:.88rem;margin:0 0 16px}
-.row{display:flex;gap:10px;align-items:center}
-.row>*{min-width:0}
-.between{justify-content:space-between}
-.field{display:flex;flex-direction:column;gap:5px;margin:12px 0}
-.field label,.field-label{font-size:.88rem;font-weight:650}
-.field input,.field select,.field textarea{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
-.field textarea{resize:vertical;min-height:76px}
-.btn{border:0;background:var(--green);color:white;border-radius:10px;padding:10px 14px;font-weight:750;transition:opacity .15s}
-.btn:hover{opacity:.92}
-.btn.secondary{background:var(--green2);color:var(--green)}
-.btn.ghost{background:var(--card-sub);color:var(--ink);border:1px solid var(--line)}
-.btn.danger{background:#a83b32;color:#fff}
-.btn.small{padding:7px 10px;font-size:.85rem}
-.water-number{font-size:1.85rem;font-weight:850;letter-spacing:-.05em}
-.progress{height:10px;border-radius:99px;background:var(--line);overflow:hidden;margin:10px 0}
-.progress div{height:100%;width:0;background:var(--green);border-radius:99px;transition:width .2s}
-.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
-.quick .btn{padding:11px 5px}
-.items{display:flex;flex-direction:column;gap:8px}
-.item{border:1px solid var(--line);border-radius:12px;padding:11px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.item-title{font-weight:700;overflow-wrap:anywhere}
-.item small{display:block;color:var(--muted);margin-top:2px}
-.item-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
-.badge{display:inline-block;padding:2px 7px;border-radius:6px;font-size:.73rem;font-weight:700}
-.badge.workout{background:var(--blue2);color:var(--blue);border:1px solid var(--blue)}
-.badge.high{background:#ffebee;color:#c62828;border:1px solid #ef9a9a}
-.badge.mod{background:#fff8e1;color:#b78103;border:1px solid #ffe082}
-.badge.low{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7}
-.empty{color:var(--muted);font-size:.88rem;padding:12px;border:1px dashed var(--line);border-radius:12px}
-.remove{border:0;background:transparent;color:#b24b42;font-size:1.2rem;padding:4px 8px}
-.split{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.split3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.checks{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.check{display:flex;align-items:flex-start;gap:8px;font-size:.9rem}
-.check input{margin-top:4px;accent-color:var(--green)}
-.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
-.chart-box{background:var(--card-sub);border:1px solid var(--line);border-radius:14px;padding:14px}
-.chart-box h3{font-size:.95rem;margin:0 0 8px;display:flex;justify-content:space-between;align-items:center}
-.chart-canvas{width:100%;height:180px;display:block}
-.actions{display:flex;flex-wrap:wrap;gap:8px}
-.footer{margin-top:20px;text-align:center;color:var(--muted);font-size:.82rem}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#122b24;color:white;padding:10px 18px;border-radius:99px;box-shadow:var(--shadow);display:none;z-index:99;font-size:.9rem}
-.toast.show{display:block}
-
-/* Favorites Chips */
-.fav-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 14px}
-.chip{background:var(--card-sub);border:1px solid var(--line);padding:6px 10px;border-radius:99px;font-size:.82rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:background .15s}
-.chip:hover{background:var(--green2);border-color:var(--green)}
-.chip-del{color:var(--muted);font-size:.95rem;cursor:pointer}
-.chip-del:hover{color:#b24b42}
-
-/* TDEE Calculator */
-.collapsible{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--card-sub);margin:14px 0}
-.calc-result{background:var(--green2);color:var(--ink);padding:12px;border-radius:10px;margin-top:12px;display:none}
-
-/* Fasting Card */
-.fast-timer{font-size:1.6rem;font-weight:850;letter-spacing:-.03em;color:var(--green)}
-
-/* Weekly Consistency Scorecard */
-.scorecard-box{background:var(--card-sub);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:14px}
-.score-num{font-size:2rem;font-weight:850;letter-spacing:-.04em;color:var(--green);display:flex;align-items:center;gap:8px;line-height:1.1;margin-top:2px}
-.score-num small{font-size:1.05rem;color:var(--muted);font-weight:600}
-.badge-grade{font-size:.82rem;font-weight:750;padding:4px 10px;border-radius:99px;background:var(--green2);color:var(--green);border:1px solid var(--green)}
-.score-breakdown{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
-.score-item{display:flex;flex-direction:column;gap:2px}
-.score-item span{font-size:.78rem;color:var(--muted);font-weight:600}
-.score-item strong{font-size:.92rem;color:var(--ink)}
-@media(max-width:650px){.score-breakdown{grid-template-columns:repeat(2,1fr);gap:10px}}
-
-@media(max-width:820px){
-  .hero{flex-direction:column}
-  .datebox{width:100%}
-  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .layout{grid-template-columns:1fr}
-  .card.full{grid-column:auto}
-  .chart-grid{grid-template-columns:1fr}
-  .split3{grid-template-columns:1fr}
-  .wrap{padding:14px 12px 36px}
-  .hero{padding:20px}
-  .card{padding:16px}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 14.5px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
-@media(max-width:440px){
-  .stats{grid-template-columns:1fr}
-  .split{grid-template-columns:1fr}
-  .checks{grid-template-columns:1fr}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+.app { max-width: 1200px; margin: auto; padding: 22px 18px 60px; }
+
+/* Header & Nav */
+.top { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.logo {
+  width: 44px; height: 44px; border-radius: 13px;
+  background: linear-gradient(135deg, #6366f1, #4338ca);
+  color: white; display: grid; place-items: center;
+  font-weight: 900; font-size: 1.25rem;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+.brand h1 { font-size: 1.35rem; margin: 0; letter-spacing: -0.03em; font-weight: 800; }
+.brand p { margin: 0; color: var(--muted); font-size: 0.84rem; }
+.top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.date { color: var(--muted); font-size: 0.88rem; text-align: right; }
+
+.icon-btn-top {
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 0.92rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  transition: all 0.15s ease;
+}
+.icon-btn-top:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Hero Banner */
+.hero {
+  background: linear-gradient(130deg, #171d33, #2a2559);
+  color: white; border-radius: 22px; padding: 28px;
+  display: grid; grid-template-columns: 1.35fr 1fr; gap: 24px;
+  align-items: center; margin-bottom: 22px;
+  box-shadow: 0 12px 30px rgba(23, 29, 51, 0.3);
+  position: relative; overflow: hidden;
+}
+.kicker { text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.72rem; color: #a5b4fc; font-weight: 800; }
+.hero h2 { font-size: clamp(1.65rem, 3.8vw, 2.35rem); line-height: 1.15; letter-spacing: -0.04em; margin: 8px 0; font-weight: 850; }
+.hero p { color: #cbd5e1; max-width: 580px; margin: 0; font-size: 0.92rem; }
+
+.hero-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.hstat { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); padding: 13px; border-radius: 14px; backdrop-filter: blur(4px); }
+.hstat strong { display: block; font-size: 1.6rem; letter-spacing: -0.03em; }
+.hstat span { font-size: 0.78rem; color: #cbd5e1; }
+
+/* Tabs Bar */
+.tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 16px; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  border: 1px solid var(--line); background: var(--card); color: var(--muted);
+  border-radius: 99px; padding: 8px 16px; white-space: nowrap; font-weight: 700;
+  font-size: 0.88rem; transition: all 0.15s ease;
+}
+.tab:hover { color: var(--ink); border-color: var(--accent); }
+.tab.active { background: var(--accent); color: white; border-color: var(--accent); box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3); }
+
+/* Pages & Grid */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+.grid { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 18px; }
+.grid-equal { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+
+/* Cards & UI Elements */
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+  padding: 20px; box-shadow: var(--shadow); min-width: 0;
+}
+.card h3 { margin: 0; font-size: 1.12rem; letter-spacing: -0.025em; font-weight: 800; display: flex; align-items: center; justify-content: space-between; }
+.desc { color: var(--muted); font-size: 0.86rem; margin: 4px 0 16px; }
+.row { display: flex; align-items: center; gap: 10px; }
+.between { justify-content: space-between; }
+.muted { color: var(--muted); }
+.small { font-size: 0.82rem; }
+
+.pill {
+  display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px;
+  border-radius: 99px; background: var(--line); color: var(--muted);
+  font-size: 0.76rem; font-weight: 750;
+}
+.pill.green { background: var(--green-soft); color: var(--green); }
+.pill.purple { background: var(--accent-soft); color: var(--accent); }
+.pill.orange { background: var(--orange-soft); color: var(--orange); }
+.pill.red { background: var(--red-soft); color: var(--red); }
+.pill.blue { background: var(--blue-soft); color: var(--blue); }
+
+.progress { height: 9px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.progress div { height: 100%; width: 0; background: var(--accent); border-radius: 99px; transition: width 0.3s ease; }
+
+.metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+.metric { background: var(--bg); border: 1px solid var(--line); border-radius: 13px; padding: 12px; }
+.metric span { display: block; color: var(--muted); font-size: 0.78rem; font-weight: 600; }
+.metric strong { font-size: 1.45rem; letter-spacing: -0.03em; font-weight: 800; }
+
+/* North Star Focus Box */
+.north-star-card {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(67, 56, 202, 0.05));
+  border: 1.5px solid var(--accent); border-radius: 16px; padding: 16px 18px; margin-bottom: 18px;
+}
+.north-star-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.north-star-header strong { font-size: 0.95rem; font-weight: 850; color: var(--accent); display: flex; align-items: center; gap: 6px; }
+.north-star-body { display: flex; align-items: center; gap: 12px; }
+.north-star-body input[type=checkbox] { width: 22px; height: 22px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+.north-star-title { font-size: 1.05rem; font-weight: 750; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.north-star-title.done { text-decoration: line-through; opacity: 0.6; }
+
+/* Rollover Banner */
+.rollover-banner {
+  background: var(--orange-soft); border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; display: none;
+  align-items: center; justify-content: space-between; gap: 12px;
+}
+.rollover-text { font-size: 0.88rem; color: var(--orange); font-weight: 700; }
+
+/* Filter Chips */
+.filter-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.filter-chip {
+  border: 1px solid var(--line); background: var(--bg); color: var(--muted);
+  border-radius: 8px; padding: 4px 10px; font-size: 0.78rem; font-weight: 600;
+}
+.filter-chip.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+/* Task List */
+.task-list { display: flex; flex-direction: column; gap: 9px; }
+.task {
+  display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px;
+  border: 1px solid var(--line); border-radius: 13px; background: var(--card);
+  transition: all 0.15s ease;
+}
+.task:hover { border-color: #cbd5e1; }
+.task input[type=checkbox] { width: 19px; height: 19px; margin-top: 3px; accent-color: var(--accent); flex-shrink: 0; cursor: pointer; }
+.task-main { flex: 1; min-width: 0; }
+.task-title { font-weight: 700; overflow-wrap: anywhere; font-size: 0.94rem; }
+.task.done { opacity: 0.65; background: var(--bg); }
+.task.done .task-title { text-decoration: line-through; color: var(--muted); }
+.task-meta { font-size: 0.78rem; color: var(--muted); margin-top: 3px; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.task-actions { display: flex; gap: 4px; }
+
+/* Priority badges */
+.priority-tag { font-size: 0.7rem; font-weight: 800; border-radius: 6px; padding: 2px 6px; }
+.priority-high { background: var(--red-soft); color: var(--red); }
+.priority-med { background: var(--orange-soft); color: var(--orange); }
+.priority-low { background: var(--blue-soft); color: var(--blue); }
+
+.iconbtn {
+  border: 0; background: transparent; color: var(--muted);
+  font-size: 1.05rem; padding: 3px 6px; border-radius: 6px;
+}
+.iconbtn:hover { background: var(--line); color: var(--ink); }
+
+.btn {
+  border: 0; background: var(--accent); color: white;
+  border-radius: 10px; padding: 9px 15px; font-weight: 700; font-size: 0.88rem;
+  transition: opacity 0.15s ease;
+}
+.btn:hover { opacity: 0.9; }
+.btn.secondary { background: var(--accent-soft); color: var(--accent); }
+.btn.ghost { background: var(--line); color: var(--ink); }
+.btn.danger { background: var(--red-soft); color: var(--red); }
+.btn.success { background: var(--green-soft); color: var(--green); }
+.btn.sm { padding: 6px 10px; font-size: 0.8rem; border-radius: 8px; }
+
+/* Subtasks inside Goals */
+.subtask-list { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; padding-left: 4px; }
+.subtask-item { display: flex; align-items: center; gap: 8px; font-size: 0.86rem; }
+.subtask-item input[type=checkbox] { accent-color: var(--accent); cursor: pointer; }
+.subtask-item.done span { text-decoration: line-through; color: var(--muted); }
+
+/* SVG Graph & Analytics Charts */
+.chart-box {
+  background: var(--bg); border: 1px solid var(--line); border-radius: 14px;
+  padding: 18px; margin-bottom: 16px;
+}
+.svg-chart { width: 100%; height: 200px; display: block; }
+.matrix-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid var(--line);
+}
+.matrix-row:last-child { border-bottom: 0; }
+
+/* Spaced Repetition / Flashcard Styles */
+.flashcard-wrapper { perspective: 1000px; max-width: 680px; margin: 15px auto 12px; }
+.flashcard {
+  position: relative; width: 100%; min-height: 320px; height: 340px;
+  transform-style: preserve-3d; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.flashcard.flipped { transform: rotateY(180deg); }
+.flashcard-face {
+  position: absolute; inset: 0; backface-visibility: hidden;
+  border-radius: 18px; padding: 22px 24px; border: 1px solid var(--line);
+  background: var(--card); box-shadow: var(--shadow);
+  display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;
+}
+.flashcard-back { transform: rotateY(180deg); background: var(--bg); border-color: var(--accent); }
+.flashcard-tag { font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; }
+.flashcard-content {
+  flex: 1; display: flex; flex-direction: column; justify-content: flex-start;
+  margin: 10px 0 6px; overflow-y: auto; scrollbar-width: thin; padding-right: 4px;
+}
+.flashcard-content h4 { font-size: 1.25rem; margin: 0 0 10px; line-height: 1.35; font-weight: 800; }
+.flashcard-content pre, .flashcard-content code {
+  background: rgba(0, 0, 0, 0.08); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.84rem; overflow-x: auto;
+  display: block; line-height: 1.48; margin: 8px 0; color: var(--ink);
+}
+[data-theme="dark"] .flashcard-content pre,
+[data-theme="dark"] .flashcard-content code { background: #0b111e; border-color: #1e293b; }
+.flashcard-hint {
+  font-size: 0.78rem; color: var(--muted); text-align: center;
+  padding-top: 6px; border-top: 1px dashed var(--line); flex-shrink: 0;
+}
+
+/* Focus Pomodoro Timer Widget */
+.timer-box {
+  background: var(--bg); border: 1px solid var(--line);
+  border-radius: 14px; padding: 16px; text-align: center;
+}
+.timer-display { font-size: 2.8rem; font-weight: 900; letter-spacing: -0.04em; margin: 8px 0; font-variant-numeric: tabular-nums; }
+.timer-modes { display: flex; justify-content: center; gap: 6px; margin-bottom: 12px; }
+.timer-mode-btn { border: 1px solid var(--line); background: var(--card); color: var(--muted); border-radius: 8px; padding: 4px 10px; font-size: 0.78rem; font-weight: 700; }
+.timer-mode-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+/* Forms & Fields */
+.formrow { display: flex; gap: 8px; }
+.formrow > * { min-width: 0; }
+.field { display: flex; flex-direction: column; gap: 5px; margin: 10px 0; }
+.field label { font-size: 0.82rem; font-weight: 750; color: var(--muted); }
+.field input, .field select, .field textarea {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--line);
+  border-radius: 10px; background: var(--card); color: var(--ink);
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.field textarea { min-height: 80px; resize: vertical; }
+.formgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.empty { padding: 22px; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); font-size: 0.88rem; text-align: center; }
+
+/* Goal cards */
+.goal-card { border: 1px solid var(--line); border-radius: 14px; padding: 16px; background: var(--card); }
+.goal-card h4 { margin: 0 0 4px; font-size: 1rem; font-weight: 750; }
+.goal-card p { margin: 0 0 10px; color: var(--muted); font-size: 0.84rem; }
+.goal-card .progress { margin: 10px 0; }
+.goal-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+
+/* GitHub-Style Contribution Heatmap */
+.heatmap-container { overflow-x: auto; padding: 6px 0; }
+.heatmap-grid { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 13px); gap: 4px; width: max-content; }
+.heat-box { width: 13px; height: 13px; border-radius: 3px; background: var(--line); transition: transform 0.1s ease; }
+.heat-box:hover { transform: scale(1.3); outline: 1px solid var(--ink); }
+.heat-lvl-0 { background: var(--line); }
+.heat-lvl-1 { background: #86efac; }
+.heat-lvl-2 { background: #22c55e; }
+.heat-lvl-3 { background: #15803d; }
+[data-theme="dark"] .heat-lvl-1 { background: #064e3b; }
+[data-theme="dark"] .heat-lvl-2 { background: #059669; }
+[data-theme="dark"] .heat-lvl-3 { background: #10b981; }
+
+/* Weekly mini calendar */
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.daybox { border: 1px solid var(--line); border-radius: 11px; text-align: center; padding: 9px 3px; background: var(--bg); }
+.daybox .dayname { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+.daybox strong { display: block; font-size: 0.98rem; margin: 4px 0; }
+.daybox .dot { width: 7px; height: 7px; background: var(--line); border-radius: 50%; margin: auto; }
+.daybox.done .dot { background: var(--green); }
+.daybox.today { border-color: var(--accent); background: var(--accent-soft); }
+
+/* Water Tracker */
+.water-tracker { display: flex; align-items: center; justify-content: space-between; background: var(--blue-soft); padding: 14px; border-radius: 14px; border: 1px solid rgba(2, 132, 199, 0.2); }
+.water-glasses { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.water-glass { width: 22px; height: 28px; border-radius: 4px 4px 8px 8px; border: 2px solid var(--blue); cursor: pointer; transition: background 0.15s ease; }
+.water-glass.filled { background: var(--blue); }
+
+/* Kanban Board for Game Dev */
+.kanban-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.kanban-col { background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.kanban-header { font-size: 0.86rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
+.kanban-item { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px; box-shadow: var(--shadow); }
+.kanban-item h5 { margin: 0 0 5px; font-size: 0.9rem; font-weight: 750; }
+.kanban-item p { margin: 0 0 8px; font-size: 0.8rem; color: var(--muted); }
+.kanban-item-actions { display: flex; justify-content: space-between; align-items: center; }
+
+/* Custom Modals */
+.modal-overlay {
+  position: fixed; inset: 0; background: var(--modal-bg);
+  backdrop-filter: blur(4px); display: none; place-items: center;
+  z-index: 1000; padding: 16px;
+}
+.modal-overlay.show { display: grid; }
+.modal-card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+  max-width: 480px; width: 100%; padding: 22px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes modalPop { from { transform: scale(0.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal-close-btn {
+  position: absolute; top: 14px; right: 14px; font-size: 1.25rem; line-height: 1;
+  padding: 4px 8px; border-radius: 8px; color: var(--muted); cursor: pointer;
+  background: transparent; border: none;
+}
+.modal-close-btn:hover { color: var(--ink); background: var(--line); }
+.modal-card h3 { margin: 0 0 8px; font-size: 1.2rem; font-weight: 800; padding-right: 28px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  padding: 10px 18px; background: var(--nav); color: white;
+  border-radius: 99px; display: none; z-index: 2000; font-size: 0.88rem; font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+.toast.show { display: block; animation: toastIn 0.2s ease; }
+@keyframes toastIn { from { transform: translate(-50%, 10px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+
+#confettiCanvas { position: fixed; inset: 0; pointer-events: none; z-index: 9999; }
+.footer { text-align: center; color: var(--muted); font-size: 0.82rem; margin-top: 30px; }
+
+/* Responsive adjustments for Tablets & Phones */
+@media(max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .grid, .grid-equal, .kanban-grid { grid-template-columns: 1fr; }
+  .hero-stats { max-width: 100%; }
+  .top { flex-wrap: wrap; }
+  .date { display: none; }
+  .metric-row { gap: 8px; }
+  .card { padding: 16px; }
+}
+
+@media(max-width: 600px) {
+  .formrow { flex-wrap: wrap; gap: 8px; }
+  .formrow > input { width: 100%; flex: 1 1 100% !important; }
+  .formrow > select { flex: 1; min-width: 120px; }
+  .formrow > button { flex: 1; }
+  .top-actions { width: 100%; justify-content: flex-start; gap: 6px; }
+  .icon-btn-top { padding: 6px 10px; font-size: 0.82rem; }
+  .brand h1 { font-size: 1.2rem; }
+  .tabs { padding-bottom: 12px; -webkit-overflow-scrolling: touch; }
+  .tab { padding: 7px 13px; font-size: 0.82rem; }
+  .modal-card { padding: 18px; margin: 12px; }
+  .flashcard { min-height: 290px; height: 320px; }
+  .flashcard-face { padding: 16px 18px; }
+}
+
+@media(max-width: 480px) {
+  .app { padding: 12px 10px 48px; }
+  .hero { padding: 18px; border-radius: 18px; }
+  .hero h2 { font-size: 1.6rem; }
+  .hero-stats { gap: 8px; }
+  .hstat { padding: 10px; border-radius: 10px; }
+  .hstat strong { font-size: 1.3rem; }
+  .formgrid { grid-template-columns: 1fr; gap: 6px; }
+  .week { gap: 3px; }
+  .daybox { padding: 6px 1px; }
+  .daybox strong { font-size: 0.85rem; }
+  .metric strong { font-size: 1.25rem; }
+  .timer-display { font-size: 2.3rem; }
 }
 </style>
 </head>
 <body>
-<main class="wrap">
-  <header class="hero">
+<canvas id="confettiCanvas"></canvas>
+
+<main class="app">
+<header class="top">
+  <div class="brand">
+    <div class="logo">G</div>
     <div>
-      <div class="hero-top">
-        <span class="eyebrow">All-In-One Health & Wellness</span>
-        <span class="streak-badge" id="streakBadge">🔥 1 Day Streak</span>
-        <button class="theme-btn" id="themeToggle" title="Toggle Light/Dark Theme">🌙 Dark</button>
-      </div>
-      <h1>Daily Health, Fitness & Wellness Tracker</h1>
-      <p>Log exercise & workouts, nutrition & protein, daily vitals, hydration, sleep, and track your long-term health trends.</p>
+      <h1 id="brandTitle">GoalOS</h1>
+      <p id="brandSubtitle">Developer & Creator Progress System</p>
     </div>
-    <div class="datebox">
-      <label for="logDate">Selected Date</label>
-      <input id="logDate" type="date">
-      <div class="date-nav">
-        <button class="btn ghost small" id="btnPrevDate" title="Previous Day">◀ Prev</button>
-        <button class="btn ghost small" id="btnToday" title="Jump to Today">Today</button>
-        <button class="btn ghost small" id="btnNextDate" title="Next Day">Next ▶</button>
-      </div>
-    </div>
-  </header>
+  </div>
+  <div class="top-actions">
+    <button class="icon-btn-top" id="accountBadgeBtn">👤 <span id="accountBadgeName">Alex Hunter</span></button>
+    <button class="icon-btn-top" id="themeToggle" title="Toggle theme">🌓 Theme</button>
+    <button class="icon-btn-top" id="soundToggle" title="Toggle sound effects">🔔 Sound</button>
+    <div class="date" id="todayLabel"></div>
+  </div>
+</header>
 
-  <!-- Summary Stats: Water, Calories, Workout Mins, Weight -->
-  <section class="stats" aria-label="Daily summary">
-    <div class="stat">
-      <div class="label">Water Logged</div>
-      <div class="value" id="statWater">0.00 L</div>
-      <small id="waterCaption">Target: 2,500 mL</small>
-    </div>
-    <div class="stat">
-      <div class="label">Food Calories</div>
-      <div class="value" id="statCalories">0 kcal</div>
-      <small id="calorieCaption">Target: 1,800 kcal</small>
-    </div>
-    <div class="stat">
-      <div class="label">Exercise & Movement</div>
-      <div class="value" id="statExercise">0 min</div>
-      <small id="exerciseCaption">0 steps · 0 kcal burned</small>
-    </div>
-    <div class="stat">
-      <div class="label">Body Weight</div>
-      <div class="value" id="statWeight">—</div>
-      <small id="weightCaption">Goal: 75.0 kg</small>
-    </div>
-  </section>
+<section class="hero">
+  <div>
+    <div class="kicker">Consistency over intensity</div>
+    <h2>Build the life you keep talking about.</h2>
+    <p>A unified progress system for Game Engineering, daily LeetCode practice, personal brand, and sustainable health.</p>
+  </div>
 
-  <!-- Visual Trends Card: Weight & Activity Graphs -->
-  <section class="card full" id="trendsCard">
-    <h2>
-      <span>📈 7-Day Visual Progress & Trends</span>
-      <div class="row" style="gap:6px">
-        <button class="btn ghost small" id="btnChartModeWater">💧 Water</button>
-        <button class="btn ghost small" id="btnChartModeActivity">🏃 Exercise</button>
-      </div>
-    </h2>
-    <p class="sub">Track downward weight trends alongside your weekly hydration or workout consistency.</p>
+  <div class="hero-stats">
+    <div class="hstat"><strong id="heroCompletion">0%</strong><span>Today's completion</span></div>
+    <div class="hstat"><strong id="heroStreak">0</strong><span>Active-day streak</span></div>
+    <div class="hstat"><strong id="heroTasks">0/0</strong><span>Tasks finished today</span></div>
+    <div class="hstat"><strong id="heroDsaCount">0</strong><span>LeetCode solved</span></div>
+  </div>
+</section>
 
-    <!-- Weekly Fitness Consistency Scorecard -->
-    <div class="scorecard-box">
-      <div class="row between" style="flex-wrap:wrap;gap:10px">
-        <div>
-          <span style="font-size:.82rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em">Weekly Compliance Score (Last 7 Days)</span>
-          <div class="score-num">
-            <span id="weeklyScoreVal">0</span><small>/100</small>
-            <span id="weeklyScoreGrade" class="badge-grade">🌱 Calculating...</span>
+<!-- MAIN NAVIGATION TABS -->
+<nav class="tabs" aria-label="Main sections">
+  <button class="tab active" data-tab="dashboard">Dashboard</button>
+  <button class="tab" data-tab="analytics">📊 Visual Analytics</button>
+  <button class="tab" data-tab="dsa">DSA & LeetCode</button>
+  <button class="tab" data-tab="goals">Goals & Roadmap</button>
+  <button class="tab" data-tab="kanban">Game Dev Milestones</button>
+  <button class="tab" data-tab="flashcards">Flashcards</button>
+  <button class="tab" data-tab="habits">Habits & Streaks</button>
+  <button class="tab" data-tab="health">Health & Weight</button>
+  <button class="tab" data-tab="review">Weekly Review</button>
+  <button class="tab" data-tab="settings">Account & Cloud</button>
+</nav>
+
+<!-- PAGE 1: DASHBOARD -->
+<section class="page active" id="page-dashboard">
+  <!-- Unfinished Task Rollover Banner -->
+  <div class="rollover-banner" id="rolloverBanner">
+    <div class="rollover-text" id="rolloverText">📋 You have unfinished tasks from yesterday.</div>
+    <div class="row" style="gap:6px">
+      <button class="btn sm" id="rolloverAcceptBtn">Move to Today</button>
+      <button class="btn sm ghost" id="rolloverDismissBtn">Dismiss</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="stack">
+      <!-- Today's Execution Card -->
+      <section class="card">
+        <div class="row between">
+          <h3>Today's Execution</h3>
+          <span class="pill purple" id="dayBadge">Daily Plan</span>
+        </div>
+        <p class="desc">Small daily actions compounded over time. Mark items off as you finish them.</p>
+
+        <!-- North Star Focus Anchor -->
+        <div class="north-star-card">
+          <div class="north-star-header">
+            <strong>🎯 TODAY'S NORTH STAR FOCUS</strong>
+            <button class="iconbtn" id="editNorthStarBtn" title="Change North Star task">✎ Edit</button>
+          </div>
+          <div class="north-star-body">
+            <input type="checkbox" id="northStarCheck">
+            <div class="north-star-title" id="northStarTitleText">Set your #1 priority task for today</div>
           </div>
         </div>
-        <div style="min-width:180px;text-align:right">
-          <small id="weeklyScoreSummaryText" style="color:var(--muted);font-weight:600">Based on Workouts, Water, Meals & Sleep</small>
+
+        <div class="metric-row">
+          <div class="metric"><span>Done</span><strong id="doneMetric">0</strong></div>
+          <div class="metric"><span>Remaining</span><strong id="remainingMetric">0</strong></div>
+          <div class="metric"><span>Completion</span><strong id="percentMetric">0%</strong></div>
         </div>
-      </div>
-      <div class="score-breakdown">
-        <div class="score-item">
-          <span>💧 Water Target</span>
-          <strong id="scoreWaterDays">0 / 7 Days</strong>
+
+        <div class="progress"><div id="todayProgress"></div></div>
+
+        <!-- Filters -->
+        <div class="row between" style="margin: 16px 0 10px; flex-wrap: wrap;">
+          <div class="filter-chips" id="taskFilters">
+            <button class="filter-chip active" data-filter="all">All</button>
+            <button class="filter-chip" data-filter="high">🔴 High</button>
+            <button class="filter-chip" data-filter="DSA & Interviews">🧠 DSA</button>
+            <button class="filter-chip" data-filter="Game Engineering">🎮 Game Dev</button>
+            <button class="filter-chip" data-filter="Health">🏃 Health</button>
+          </div>
+          <span class="small muted" id="taskCounterText">0 tasks</span>
         </div>
-        <div class="score-item">
-          <span>🏋️ Workouts Done</span>
-          <strong id="scoreWorkoutDays">0 / 5 Target Days</strong>
+
+        <div class="task-list" id="todayTasks"></div>
+
+        <!-- Add Task Form -->
+        <div class="formrow" style="margin-top:14px">
+          <input id="newTaskTitle" aria-label="New task" placeholder="Add a task for today..." style="flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--card);color:var(--ink)">
+          <select id="newTaskCategory" style="border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--card);color:var(--ink)">
+            <option>DSA & Interviews</option>
+            <option>Game Engineering</option>
+            <option>Health</option>
+            <option>Personal</option>
+          </select>
+          <select id="newTaskPriority" style="border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--card);color:var(--ink)">
+            <option value="high">🔴 High</option>
+            <option value="med" selected>🟡 Med</option>
+            <option value="low">🟢 Low</option>
+          </select>
+          <button class="btn" id="addTask">Add</button>
         </div>
-        <div class="score-item">
-          <span>🥗 Nutrition Logged</span>
-          <strong id="scoreFoodDays">0 / 7 Days</strong>
+      </section>
+
+      <!-- Weekly Consistency Card -->
+      <section class="card">
+        <div class="row between">
+          <h3>Weekly Consistency</h3>
+          <span class="pill green" id="weekScore">0/7 active days</span>
         </div>
-        <div class="score-item">
-          <span>😴 7h+ Sleep Rest</span>
-          <strong id="scoreSleepDays">0 / 7 Days</strong>
+        <p class="desc">Aim for regular consistency rather than burning out. Every check-in counts.</p>
+        <div class="week" id="weekGrid"></div>
+      </section>
+
+      <!-- GitHub-Style Heatmap Card -->
+      <section class="card">
+        <div class="row between">
+          <h3>Activity Heatmap</h3>
+          <div class="row" style="gap:4px; font-size:0.75rem; color:var(--muted)">
+            <span>Less</span>
+            <div class="heat-box heat-lvl-0"></div>
+            <div class="heat-box heat-lvl-1"></div>
+            <div class="heat-box heat-lvl-2"></div>
+            <div class="heat-box heat-lvl-3"></div>
+            <span>More</span>
+          </div>
         </div>
-      </div>
+        <p class="desc">Your consistency matrix over the past 16 weeks (tasks & habits completed).</p>
+        <div class="heatmap-container">
+          <div class="heatmap-grid" id="heatmapGrid"></div>
+        </div>
+      </section>
     </div>
 
-    <div class="chart-grid">
-      <div class="chart-box">
-        <h3><span>⚖️ Weight Trajectory (kg)</span><span id="chartWeightDiff" style="font-size:.82rem;color:var(--muted)"></span></h3>
-        <canvas id="weightCanvas" class="chart-canvas" width="480" height="180"></canvas>
+    <div class="stack">
+      <!-- Pomodoro / Focus Timer Widget -->
+      <section class="card">
+        <div class="row between">
+          <h3>Deep Work Focus Timer</h3>
+          <span class="pill purple" id="timerStatusPill">Ready</span>
+        </div>
+        <p class="desc">Timed sessions for deep coding or LeetCode problem solving.</p>
+        <div class="timer-box">
+          <div class="timer-modes">
+            <button class="timer-mode-btn active" data-time="25">25m Pomodoro</button>
+            <button class="timer-mode-btn" data-time="50">50m Deep Work</button>
+            <button class="timer-mode-btn" data-time="5">5m Break</button>
+          </div>
+          <div class="timer-display" id="timerDisplay">25:00</div>
+          <div class="row" style="justify-content:center; gap:8px">
+            <button class="btn" id="timerStartBtn">Start</button>
+            <button class="btn secondary" id="timerPauseBtn">Pause</button>
+            <button class="btn ghost" id="timerResetBtn">Reset</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Water Tracker Widget -->
+      <section class="card">
+        <div class="row between">
+          <h3>Hydration Tracker</h3>
+          <span class="pill blue" id="waterCounterPill">0 / 8 glasses</span>
+        </div>
+        <p class="desc">Maintain adequate hydration throughout your work hours.</p>
+        <div class="water-tracker">
+          <div>
+            <strong style="font-size:1.1rem; color:var(--blue)" id="waterTotalText">0 Liters</strong>
+            <div class="water-glasses" id="waterGlasses"></div>
+          </div>
+          <div class="row" style="gap:6px">
+            <button class="btn sm secondary" id="removeWaterBtn">-1</button>
+            <button class="btn sm" id="addWaterBtn" style="background:var(--blue)">+1 Glass</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Reflection Card -->
+      <section class="card">
+        <h3>Today's Reflection</h3>
+        <p class="desc">Capture one thought or lesson before signing off.</p>
+        <div class="field">
+          <label for="win">Today's win</label>
+          <textarea id="win" placeholder="What did you move forward today?"></textarea>
+        </div>
+        <div class="field">
+          <label for="blocker">Main blocker / lesson</label>
+          <input id="blocker" placeholder="What friction did you encounter?">
+        </div>
+        <button class="btn" id="saveReflection">Save reflection</button>
+      </section>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE 2: VISUAL ANALYTICS & GROWTH -->
+<section class="page" id="page-analytics">
+  <div class="grid">
+    <div class="stack">
+      <!-- Weekly Comparison & Category Effort -->
+      <section class="card">
+        <div class="row between">
+          <h3>Weekly Performance Comparison</h3>
+          <span class="pill green" id="analyticsComparePill">+0% vs Last Week</span>
+        </div>
+        <p class="desc">Visual tracking of completion momentum and category effort balance.</p>
+
+        <div class="metric-row">
+          <div class="metric"><span>This Week's Completion</span><strong id="analyticsThisWeekRate">0%</strong></div>
+          <div class="metric"><span>Last Week's Completion</span><strong id="analyticsLastWeekRate">0%</strong></div>
+          <div class="metric"><span>Total Finished Tasks</span><strong id="analyticsTotalDoneCount">0</strong></div>
+        </div>
+
+        <h4 style="font-size:0.95rem; margin:16px 0 8px">Focus & Effort Distribution</h4>
+        <div style="height:14px; border-radius:99px; overflow:hidden; display:flex; margin-bottom:10px" id="effortBar"></div>
+        <div class="row between" style="font-size:0.78rem; flex-wrap:wrap; gap:8px" id="effortLegend"></div>
+      </section>
+
+      <!-- Weight Loss Trajectory SVG Graph -->
+      <section class="card">
+        <div class="row between">
+          <h3>Weight Loss Trajectory (Goal: 75 kg)</h3>
+          <span class="pill blue" id="weightSvgLatestPill">Target: 75.0 kg</span>
+        </div>
+        <p class="desc">Visual trend of logged body weight against the 75.0 kg target baseline.</p>
+        <div class="chart-box">
+          <svg class="svg-chart" id="weightSvgChart" viewBox="0 0 600 200"></svg>
+        </div>
+        <div class="row between small muted">
+          <span>📅 Date Check-ins</span>
+          <span>Dotted Line: 75 kg Target Baseline</span>
+        </div>
+      </section>
+    </div>
+
+    <div class="stack">
+      <!-- DSA Interview Readiness Matrix -->
+      <section class="card">
+        <div class="row between">
+          <h3>DSA Interview Readiness Matrix</h3>
+          <span class="pill purple" id="dsaReadinessScore">0% Ready</span>
+        </div>
+        <p class="desc">Preparedness across core patterns based on your problem logs.</p>
+        <div class="stack" id="dsaMatrixContainer" style="gap:10px"></div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE 3: DSA & LEETCODE WITH LIVE SYNC -->
+<section class="page" id="page-dsa">
+  <!-- Live LeetCode Sync Bar -->
+  <section class="card" style="margin-bottom:18px">
+    <div class="row between" style="flex-wrap:wrap; gap:12px">
+      <div>
+        <h3 style="margin-bottom:4px">🔗 Live LeetCode Profile Sync</h3>
+        <p class="desc" style="margin-bottom:0">Automatically fetch your solved counts directly from public LeetCode stats.</p>
       </div>
-      <div class="chart-box">
-        <h3><span id="chartSecondTitle">💧 7-Day Hydration Consistency</span><span id="chartSecondAvg" style="font-size:.82rem;color:var(--muted)"></span></h3>
-        <canvas id="waterCanvas" class="chart-canvas" width="480" height="180"></canvas>
+      <div class="row" style="gap:8px">
+        <input id="leetcodeUserInput" placeholder="LeetCode Username" style="border:1px solid var(--line); border-radius:10px; padding:8px 12px; background:var(--bg); color:var(--ink)">
+        <button class="btn sm" id="syncLeetcodeBtn">🔄 Sync Live Stats</button>
       </div>
     </div>
   </section>
 
-  <div class="layout">
-    <!-- Workout & Exercise Card (NEW Detailed Workout Logger) -->
+  <div class="grid">
+    <div class="stack">
+      <section class="card">
+        <div class="row between">
+          <h3>DSA Problem Log</h3>
+          <span class="pill purple" id="dsaTotalBadge">0 Solved</span>
+        </div>
+        <p class="desc">Record your patterns, approach, and key takeaways for interview readiness.</p>
+
+        <div class="metric-row">
+          <div class="metric"><span>Easy</span><strong id="dsaEasyMetric" style="color:var(--green)">0</strong></div>
+          <div class="metric"><span>Medium</span><strong id="dsaMedMetric" style="color:var(--orange)">0</strong></div>
+          <div class="metric"><span>Hard</span><strong id="dsaHardMetric" style="color:var(--red)">0</strong></div>
+        </div>
+
+        <div class="task-list" id="dsaProblemList"></div>
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="card">
+        <h3>Log a Solved Problem</h3>
+        <p class="desc">Record a problem you solved with approach & complexity.</p>
+        <form id="dsaForm">
+          <div class="field">
+            <label for="dsaTitle">Problem Name / Number</label>
+            <input id="dsaTitle" required placeholder="e.g. 15. 3Sum / Two Pointers">
+          </div>
+          <div class="formgrid">
+            <div class="field">
+              <label for="dsaDifficulty">Difficulty</label>
+              <select id="dsaDifficulty">
+                <option value="Easy">🟢 Easy</option>
+                <option value="Medium" selected>🟡 Medium</option>
+                <option value="Hard">🔴 Hard</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="dsaTopic">Topic</label>
+              <select id="dsaTopic">
+                <option>Arrays & Two Pointers</option>
+                <option>Sliding Window & Stack</option>
+                <option>Binary Search</option>
+                <option>Trees & BST</option>
+                <option>Graphs (BFS/DFS)</option>
+                <option>Dynamic Programming</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="dsaLink">Problem URL (Optional)</label>
+            <input id="dsaLink" type="url" placeholder="https://leetcode.com/problems/...">
+          </div>
+          <div class="field">
+            <label for="dsaNotes">Approach & Edge Cases</label>
+            <textarea id="dsaNotes" placeholder="What pattern worked? Time & Space complexity?"></textarea>
+          </div>
+          <button class="btn" type="submit">Log Problem</button>
+        </form>
+      </section>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE 4: GOALS & ROADMAP (WITH SUBTASKS) -->
+<section class="page" id="page-goals">
+  <div class="grid">
     <section class="card">
-      <h2>🏋️ Exercise & Workout Tracker</h2>
-      <p class="sub">Log gym sessions, runs, yoga, walking, or sports to track active time and calories burned.</p>
-      
-      <form id="workoutForm">
+      <div class="row between">
+        <h3>Long-term Goals & Sub-milestones</h3>
+        <span class="pill purple" id="goalsTotalCount">4 Goals</span>
+      </div>
+      <p class="desc">Break complex game engineering projects and career goals into actionable sub-tasks.</p>
+      <div class="stack" id="goalCards"></div>
+    </section>
+
+    <section class="card">
+      <h3>Add a Personal Goal</h3>
+      <p class="desc">Keep goals specific and tied to realistic sub-milestones.</p>
+      <form id="goalForm">
         <div class="field">
-          <label for="workoutType">Workout Category</label>
-          <select id="workoutType">
-            <option value="Gym & Strength">Gym / Weightlifting & Strength</option>
-            <option value="Cardio & Running">Cardio / Running / Jogging</option>
-            <option value="Walking">Brisk Walking / Steps</option>
-            <option value="Yoga & Stretching">Yoga & Flexibility / Stretching</option>
-            <option value="Home Workout">Home Workout / Calisthenics</option>
-            <option value="Cycling">Cycling / Stationary Bike</option>
-            <option value="Sports">Sports (Badminton, Football, Cricket, etc.)</option>
+          <label for="goalTitle">Goal title</label>
+          <input id="goalTitle" required maxlength="100" placeholder="e.g. Build Custom Physics Engine">
+        </div>
+        <div class="field">
+          <label for="goalArea">Life area</label>
+          <select id="goalArea">
+            <option>Game Engineering</option>
+            <option>DSA & Interviews</option>
+            <option>Content & Personal Brand</option>
+            <option>Health</option>
+            <option>Finance</option>
+            <option>Personal</option>
           </select>
         </div>
         <div class="field">
-          <label for="workoutName">Routine / Exercise Name</label>
-          <input id="workoutName" required maxlength="100" placeholder="e.g. Chest & Triceps, 5km Run, Suryanamaskar">
+          <label for="goalWhy">Why it matters</label>
+          <input id="goalWhy" maxlength="180" placeholder="What will achieving this unlock?">
         </div>
-        <div class="split3">
+        <div class="formgrid">
           <div class="field">
-            <label for="workoutDuration">Duration (mins)</label>
-            <input id="workoutDuration" type="number" required min="1" max="600" placeholder="e.g. 45">
+            <label for="goalTarget">Target date</label>
+            <input id="goalTarget" type="date">
           </div>
           <div class="field">
-            <label for="workoutBurned">Burned (kcal)</label>
-            <input id="workoutBurned" type="number" min="0" max="5000" placeholder="e.g. 280">
+            <label for="goalProgress">Initial progress (%)</label>
+            <input id="goalProgress" type="number" min="0" max="100" value="0">
           </div>
+        </div>
+        <button class="btn" type="submit">Create Goal</button>
+      </form>
+    </section>
+  </div>
+</section>
+
+<!-- PAGE 5: GAME DEV KANBAN -->
+<section class="page" id="page-kanban">
+  <section class="card" style="margin-bottom:18px">
+    <div class="row between">
+      <div>
+        <h3>Game Dev Milestone Board</h3>
+        <p class="desc" style="margin-bottom:0">Track features, engine systems, shaders, and prototypes from idea to shipped.</p>
+      </div>
+      <button class="btn sm" id="addKanbanBtn">+ New Milestone Item</button>
+    </div>
+  </section>
+
+  <div class="kanban-grid">
+    <div class="kanban-col" id="col-todo">
+      <div class="kanban-header">
+        <span>📋 Backlog / To Do</span>
+        <span class="pill" id="kanbanCountTodo">0</span>
+      </div>
+      <div class="stack" id="kanbanItemsTodo"></div>
+    </div>
+
+    <div class="kanban-col" id="col-in_progress">
+      <div class="kanban-header">
+        <span>⚙️ In Progress</span>
+        <span class="pill orange" id="kanbanCountInProgress">0</span>
+      </div>
+      <div class="stack" id="kanbanItemsInProgress"></div>
+    </div>
+
+    <div class="kanban-col" id="col-shipped">
+      <div class="kanban-header">
+        <span>🚀 Shipped / Finished</span>
+        <span class="pill green" id="kanbanCountShipped">0</span>
+      </div>
+      <div class="stack" id="kanbanItemsShipped"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE 6: FLASHCARDS -->
+<section class="page" id="page-flashcards">
+  <div class="grid">
+    <div class="stack">
+      <section class="card">
+        <div class="row between">
+          <h3>Daily Revision Quiz (3 Quick Cards)</h3>
+          <span class="pill purple" id="flashcardDeckStatus">Cards Due</span>
+        </div>
+        <p class="desc">Master DSA templates and Game Engine architecture concepts with 2-minute active recall.</p>
+
+        <!-- Flashcard Flip Element -->
+        <div class="flashcard-wrapper">
+          <div class="flashcard" id="activeFlashcard">
+            <!-- Front Face -->
+            <div class="flashcard-face flashcard-front">
+              <div class="row between">
+                <span class="flashcard-tag pill purple" id="fcFrontCategory">DSA Template</span>
+                <span class="small muted" id="fcFrontLvl">Mastery: Level 1</span>
+              </div>
+              <div class="flashcard-content">
+                <h4 id="fcFrontQuestion">Loading card...</h4>
+              </div>
+              <div class="flashcard-hint">👆 Click anywhere on card to flip and reveal template</div>
+            </div>
+
+            <!-- Back Face -->
+            <div class="flashcard-face flashcard-back">
+              <div class="row between">
+                <span class="flashcard-tag pill green">Explanation & Template</span>
+                <span class="small muted">Click to flip back</span>
+              </div>
+              <div class="flashcard-content">
+                <div id="fcBackAnswer" style="font-size:0.9rem; line-height:1.55"></div>
+              </div>
+              <div class="flashcard-hint">👇 Rate your recall below</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rating controls cleanly placed below the card -->
+        <div class="row between" id="fcRatingRow" style="gap:10px; margin: 14px 0 10px;">
+          <button class="btn sm danger" id="fcBtnHard" style="flex:1; padding:9px 6px">🔴 Hard</button>
+          <button class="btn sm secondary" id="fcBtnGood" style="flex:1; padding:9px 6px">🟡 Good</button>
+          <button class="btn sm success" id="fcBtnEasy" style="flex:1; padding:9px 6px">🟢 Mastered</button>
+        </div>
+
+        <div class="row between" style="margin-top:12px; padding-top:10px; border-top:1px solid var(--line)">
+          <span class="small muted" id="fcProgressCounter">Card 1 of 6</span>
+          <button class="btn sm ghost" id="fcNextCardBtn">Skip / Next Card →</button>
+        </div>
+      </section>
+
+      <!-- Deck Overview List -->
+      <section class="card">
+        <div class="row between">
+          <h3>Your Knowledge Deck</h3>
+          <span class="pill blue" id="fcDeckCount">Cards</span>
+        </div>
+        <p class="desc">All active templates and architectural concepts saved in your memory palace.</p>
+        <div class="task-list" id="flashcardDeckList"></div>
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="card">
+        <h3>Add Custom Flashcard</h3>
+        <p class="desc">Save a new DSA trick, engine optimization note, or shader pattern.</p>
+        <form id="flashcardForm">
           <div class="field">
-            <label for="workoutIntensity">Intensity</label>
-            <select id="workoutIntensity">
-              <option value="Moderate">Moderate</option>
-              <option value="High">High</option>
-              <option value="Low">Low / Light</option>
+            <label for="fcCategoryInput">Category</label>
+            <select id="fcCategoryInput">
+              <option>DSA Template</option>
+              <option>Game Architecture</option>
+              <option>Shaders & Math</option>
+              <option>Systems & Profiling</option>
             </select>
           </div>
-        </div>
-        <button class="btn" type="submit" style="margin-top:6px">Log Workout Session</button>
-      </form>
-
-      <div class="items" id="workoutEntries" style="margin-top:14px"></div>
-
-      <!-- Workout Summary Bar -->
-      <div style="margin-top:14px;background:var(--card-sub);border:1px solid var(--line);border-radius:12px;padding:12px">
-        <div class="row between">
-          <span>Total Exercise: <strong id="totalWorkoutMins">0</strong> mins</span>
-          <span>Est. Burned: <strong id="totalWorkoutBurned">0</strong> kcal</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Meals, Protein & Calorie Deficit Card -->
-    <section class="card">
-      <h2>
-        <span>🥗 Nutrition & Protein</span>
-        <button class="btn ghost small" id="toggleTdeeBtn" style="font-size:.8rem;padding:4px 8px">🧮 TDEE Tool</button>
-      </h2>
-      <p class="sub">Track calories and protein to fuel workouts and keep lean mass healthy.</p>
-
-      <!-- TDEE & Deficit Calculator Tool -->
-      <div class="collapsible" id="tdeeSection" style="display:none">
-        <strong style="font-size:.95rem;display:block;margin-bottom:6px">🧮 Calorie Deficit & TDEE Helper</strong>
-        <div class="split">
-          <div class="field"><label for="calcGender">Gender</label><select id="calcGender"><option value="male">Male</option><option value="female">Female</option></select></div>
-          <div class="field"><label for="calcAge">Age (yrs)</label><input id="calcAge" type="number" value="28" min="15" max="100"></div>
-        </div>
-        <div class="split">
-          <div class="field"><label for="calcHeight">Height (cm)</label><input id="calcHeight" type="number" value="172" min="100" max="230"></div>
-          <div class="field"><label for="calcWeight">Current Wt (kg)</label><input id="calcWeight" type="number" value="84" min="30" max="250"></div>
-        </div>
-        <div class="field">
-          <label for="calcActivity">Activity Level</label>
-          <select id="calcActivity">
-            <option value="1.2">Sedentary (Desk job, minimal exercise)</option>
-            <option value="1.375">Lightly Active (1-3 workout days/wk)</option>
-            <option value="1.55" selected>Moderately Active (3-5 workout days/wk)</option>
-            <option value="1.725">Very Active (6-7 intense workout days/wk)</option>
-          </select>
-        </div>
-        <button class="btn small" id="btnCalculateTdee">Calculate Targets</button>
-        <div id="tdeeResult" class="calc-result">
-          <div id="tdeeResultText"></div>
-          <button class="btn small" id="btnApplyTdee" style="margin-top:8px">Apply to My Daily Goals</button>
-        </div>
-      </div>
-
-      <!-- Quick Add / Favorites -->
-      <div>
-        <label class="field-label" style="font-size:.82rem;color:var(--muted)">⚡ 1-Click Quick Foods:</label>
-        <div class="fav-chips" id="favChips"></div>
-      </div>
-
-      <form id="foodForm">
-        <div class="field">
-          <label for="foodName">Food or meal item</label>
-          <input id="foodName" required maxlength="120" placeholder="e.g. 2 rotis + dal + salad">
-        </div>
-        <div class="split">
           <div class="field">
-            <label for="foodCalories">Calories (kcal)</label>
-            <input id="foodCalories" type="number" min="0" max="10000" placeholder="e.g. 350">
+            <label for="fcQuestionInput">Concept / Question (Front)</label>
+            <textarea id="fcQuestionInput" required placeholder="e.g. When to use Sliding Window? What is the core condition?"></textarea>
           </div>
           <div class="field">
-            <label for="foodProtein">Protein (g)</label>
-            <input id="foodProtein" type="number" min="0" max="500" step="0.5" placeholder="e.g. 18">
+            <label for="fcAnswerInput">Template / Key Points (Back)</label>
+            <textarea id="fcAnswerInput" required placeholder="e.g. Expand right window, contract left window when constraint violated... Time: O(n)"></textarea>
           </div>
+          <button class="btn" type="submit">Add to Deck</button>
+        </form>
+      </section>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE 7: HABITS & STREAKS -->
+<section class="page" id="page-habits">
+  <div class="grid">
+    <section class="card">
+      <div class="row between">
+        <h3>Daily Habits & Streaks</h3>
+        <span class="pill green" id="habitStreakSummary">Active Habits</span>
+      </div>
+      <p class="desc">Mark habits as you complete them each day. Watch your per-habit streaks grow.</p>
+      <div id="habitList" class="stack" style="margin-bottom:16px"></div>
+      <div class="progress"><div id="habitProgress"></div></div>
+      <div class="row between" style="margin-top:10px">
+        <span class="muted small" id="habitCount">0/0 completed</span>
+        <span class="pill purple" id="habitPercent">0%</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Add a Habit</h3>
+      <p class="desc">Pick atomic actions that can be repeated daily without friction.</p>
+      <form id="habitForm">
+        <div class="field">
+          <label for="habitTitle">Habit name</label>
+          <input id="habitTitle" required maxlength="80" placeholder="e.g. 20-minute walk after work">
         </div>
         <div class="field">
-          <label for="foodMeal">Meal type</label>
-          <select id="foodMeal">
-            <option>Breakfast</option>
-            <option>Lunch</option>
-            <option>Snack</option>
-            <option>Dinner</option>
-            <option>Drink</option>
+          <label for="habitArea">Category</label>
+          <select id="habitArea">
+            <option>Learning</option>
+            <option>Career</option>
+            <option>Health</option>
+            <option>Content</option>
+            <option>Personal</option>
           </select>
         </div>
-        
-        <div class="row between" style="margin-top:6px">
-          <button class="btn" type="submit">Add Food</button>
-          <button class="btn ghost small" type="button" id="btnSaveFavorite" title="Save this food to 1-click Quick list">⭐ Save as Favorite</button>
-        </div>
+        <button class="btn" type="submit">Add Habit</button>
       </form>
-
-      <!-- Calorie & Protein Targets Configuration -->
-      <div class="split" style="margin-top:16px;padding-top:12px;border-top:1px solid var(--line)">
-        <div class="field">
-          <label for="calorieGoal">Calorie Target (kcal)</label>
-          <input id="calorieGoal" type="number" min="500" max="5000" step="50" value="1800">
-        </div>
-        <div class="field">
-          <label for="proteinGoal">Protein Goal (g)</label>
-          <input id="proteinGoal" type="number" min="10" max="300" step="5" value="85">
-        </div>
-      </div>
-
-      <div class="items" id="foodEntries" style="margin-top:14px"></div>
-
-      <!-- Realtime Deficit & Protein Progress -->
-      <div style="margin-top:14px;background:var(--card-sub);border:1px solid var(--line);border-radius:12px;padding:12px">
-        <div class="row between" style="margin-bottom:6px">
-          <span>Calories: <strong id="foodCalTotal">0</strong> / <span id="foodCalTarget">1800</span> kcal</span>
-          <span id="calDeficitText" style="font-weight:700;font-size:.9rem"></span>
-        </div>
-        <div class="progress" style="margin:4px 0 10px"><div id="calorieBar" style="background:#2e7d32"></div></div>
-        
-        <div class="row between">
-          <span>Protein: <strong id="foodProtTotal">0</strong> / <span id="foodProtTarget">85</span> g</span>
-          <span id="proteinPctText" style="font-weight:700;font-size:.9rem"></span>
-        </div>
-        <div class="progress" style="margin:4px 0"><div id="proteinBar" style="background:#0277bd"></div></div>
-      </div>
-    </section>
-
-    <!-- Hydration Card -->
-    <section class="card">
-      <h2>💧 Water Intake</h2>
-      <p class="sub">Log drinks as you go. Hydration is vital for muscle recovery and metabolic rate.</p>
-      <div class="row between"><div class="water-number" id="waterTotal">0 mL</div><div id="waterPercent" style="font-weight:700">0%</div></div>
-      <div class="progress" role="progressbar" aria-label="Water target progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="waterProgress"><div id="waterBar"></div></div>
-      <div class="quick">
-        <button class="btn secondary" data-water="150">+150 mL</button>
-        <button class="btn secondary" data-water="250">+250 mL</button>
-        <button class="btn secondary" data-water="500">+500 mL</button>
-      </div>
-      <div class="field"><label for="customWater">Other amount (mL)</label><div class="row"><input id="customWater" type="number" min="1" max="3000" placeholder="e.g. 200"><button class="btn" id="addCustomWater">Add</button></div></div>
-      <div class="field"><label for="waterGoal">Daily reference target (mL)</label><input id="waterGoal" type="number" min="250" max="6000" step="250" value="2500"></div>
-      <div class="items" id="waterEntries"></div>
-      <button class="btn ghost small" id="undoWater" style="margin-top:10px">Undo latest water entry</button>
-    </section>
-
-    <!-- Daily Vitals & Health Habits Card (NEW) -->
-    <section class="card">
-      <h2>🩺 Vitals, Recovery & Daily Habits</h2>
-      <p class="sub">Track key health indicators, sleep recovery, energy, and wellness consistency.</p>
-      
-      <div class="split">
-        <div class="field">
-          <label for="bpInput">Blood Pressure (mmHg)</label>
-          <input id="bpInput" placeholder="e.g. 120/80">
-        </div>
-        <div class="field">
-          <label for="pulseInput">Resting Pulse (bpm)</label>
-          <input id="pulseInput" type="number" min="30" max="220" placeholder="e.g. 68">
-        </div>
-      </div>
-
-      <div class="split">
-        <div class="field">
-          <label for="stepsInput">Daily Steps</label>
-          <input id="stepsInput" type="number" min="0" max="100000" step="100" value="0">
-        </div>
-        <div class="field">
-          <label for="sleepInput">Sleep Duration (hrs)</label>
-          <input id="sleepInput" type="number" min="0" max="24" step="0.25" placeholder="e.g. 7.5">
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="energySelect">Energy & Mood Level</label>
-        <select id="energySelect">
-          <option value="High Energy">⚡ High Energy / Feeling Strong</option>
-          <option value="Good" selected>😊 Good / Well Recovered</option>
-          <option value="Moderate">😐 Moderate / Normal</option>
-          <option value="Fatigued">😴 Tired / Low Energy / Sore</option>
-        </select>
-      </div>
-
-      <!-- Healthy Daily Habits Checklist -->
-      <div class="field">
-        <span class="field-label">Daily Wellness Checklist:</span>
-        <div class="checks" id="habitChecks" style="margin-top:6px">
-          <label class="check"><input type="checkbox" value="Multivitamin / Supplements">💊 Vitamins / Supplements</label>
-          <label class="check"><input type="checkbox" value="Stretching / Mobility">🧘 Stretching & Mobility</label>
-          <label class="check"><input type="checkbox" value="Clean Eating / No Junk">🥗 Clean Food (No Junk)</label>
-          <label class="check"><input type="checkbox" value="8000+ Steps Achieved">🚶 8,000+ Steps Done</label>
-        </div>
-      </div>
-
-      <button class="btn" id="saveVitals">Save Vitals & Health Check</button>
-    </section>
-
-    <!-- Weight & Body Check-in Card -->
-    <section class="card">
-      <h2>⚖️ Body Weight Check-in</h2>
-      <p class="sub">Log weight in the morning under consistent conditions.</p>
-      <div class="split">
-        <div class="field"><label for="weightInput">Today's Weight (kg)</label><input id="weightInput" type="number" min="25" max="350" step="0.1" placeholder="85.5"></div>
-        <div class="field"><label for="targetWeight">Goal Weight (kg)</label><input id="targetWeight" type="number" min="25" max="350" step="0.1" value="75.0"></div>
-      </div>
-      <button class="btn" id="saveWeight">Save Weight</button>
-      <div id="weightHistory" class="items" style="margin-top:14px"></div>
-    </section>
-
-    <!-- Intermittent Fasting Card -->
-    <section class="card">
-      <h2>⏱️ Fasting & Eating Window</h2>
-      <p class="sub">Track fasting hours to improve insulin sensitivity and support natural recovery.</p>
-      
-      <div style="background:var(--card-sub);border:1px solid var(--line);border-radius:12px;padding:14px">
-        <div class="row between">
-          <div>
-            <span style="font-size:.82rem;color:var(--muted);font-weight:600">Current Fast State</span>
-            <div class="fast-timer" id="fastDisplay">Not Fasting</div>
-          </div>
-          <button class="btn small" id="btnFastToggle">Start Fast</button>
-        </div>
-        <div class="progress" style="margin:8px 0 4px"><div id="fastBar" style="background:#8e24aa"></div></div>
-        <small id="fastSub" style="color:var(--muted)">Target: 16 hours fasting window</small>
-      </div>
-    </section>
-
-    <!-- Notes & Reflections Card -->
-    <section class="card full">
-      <h2>📝 Daily Reflections & Notes</h2>
-      <p class="sub">Notes on workouts (weights lifted, sets/reps), gym progress, how you felt, or health observations.</p>
-      <div class="field">
-        <label for="notes">Notes</label>
-        <textarea id="notes" maxlength="2000" placeholder="PRs, gym weights, recovery notes, meal adjustments, doctor advice..."></textarea>
-      </div>
-      <button class="btn" id="saveNotes">Save Notes</button>
-    </section>
-
-    <!-- Data Management & Export Card -->
-    <section class="card full">
-      <h2>📤 Data Safety, Backups & Complete History</h2>
-      <p class="sub">100% private to this browser. Export backups regularly so your fitness journey is always safe.</p>
-      <div class="actions">
-        <button class="btn" id="exportJson">Export Backup (JSON)</button>
-        <button class="btn secondary" id="btnImportJson">Import Backup (JSON)</button>
-        <input type="file" id="importFileInput" accept=".json" style="display:none">
-        <button class="btn secondary" id="exportFullCsv">Export All History (CSV)</button>
-        <button class="btn secondary" id="copyReport">Copy Day Summary</button>
-        <button class="btn ghost" id="printReport">Print / Save PDF</button>
-      </div>
-      <div class="field" style="margin-top:14px">
-        <label for="report">Daily Summary Report</label>
-        <textarea id="report" readonly rows="9" placeholder="Your formatted summary appears here."></textarea>
-      </div>
-      <div class="actions">
-        <button class="btn ghost" id="refreshReport">Refresh Summary</button>
-        <button class="btn danger" id="clearDay">Clear This Day's Log</button>
+      <div class="callout" style="margin-top:18px">
+        <strong>Baseline Strategy:</strong> 1 LeetCode problem in Java + 1 focused Game Dev engineering session + proper hydration + comfortable movement.
       </div>
     </section>
   </div>
+</section>
 
-  <footer class="footer">Personal Health, Fitness & Wellness Tracker · Private local storage · Works 100% offline</footer>
+<!-- PAGE 8: HEALTH & WEIGHT -->
+<section class="page" id="page-health">
+  <div class="grid">
+    <div class="stack">
+      <section class="card">
+        <div class="row between">
+          <h3>Target Weight Progress (Goal: 75 kg)</h3>
+          <span class="pill green" id="weightCurrentPill">-- kg</span>
+        </div>
+        <p class="desc">Consistent healthy nutrition, hydration, and movement to reach your 75 kg target.</p>
+        
+        <div class="metric-row">
+          <div class="metric"><span>Latest Weight</span><strong id="weightLatestMetric">--</strong></div>
+          <div class="metric"><span>Target Goal</span><strong id="weightTargetMetric">75.0 kg</strong></div>
+          <div class="metric"><span>Total Entries</span><strong id="weightCountMetric">0</strong></div>
+        </div>
+
+        <div class="stack" id="weightLogsList"></div>
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="card">
+        <h3>Log Weight Entry</h3>
+        <p class="desc">Log your weight periodically (e.g. weekly morning check-in).</p>
+        <form id="weightForm">
+          <div class="formgrid">
+            <div class="field">
+              <label for="weightDate">Date</label>
+              <input id="weightDate" type="date" required>
+            </div>
+            <div class="field">
+              <label for="weightValue">Weight (kg)</label>
+              <input id="weightValue" type="number" step="0.1" min="40" max="200" required placeholder="e.g. 82.5">
+            </div>
+          </div>
+          <div class="field">
+            <label for="weightNotes">Notes / Mood / Energy</label>
+            <input id="weightNotes" placeholder="e.g. Felt energetic, did light walking">
+          </div>
+          <button class="btn" type="submit">Save Weight Entry</button>
+        </form>
+      </section>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE 9: WEEKLY REVIEW -->
+<section class="page" id="page-review">
+  <div class="grid">
+    <section class="card">
+      <h3>Weekly Review & Course Correction</h3>
+      <p class="desc">Reflect objectively at the end of each week to align on priorities.</p>
+      <div class="field">
+        <label for="reviewWins">What went well this week?</label>
+        <textarea id="reviewWins" placeholder="Evidence of progress (LeetCode problems solved, dev milestones hit)..."></textarea>
+      </div>
+      <div class="field">
+        <label for="reviewMissed">What did I miss, and why?</label>
+        <textarea id="reviewMissed" placeholder="Be factual and honest, not judgmental..."></textarea>
+      </div>
+      <div class="field">
+        <label for="reviewLesson">Key lesson learned</label>
+        <textarea id="reviewLesson" placeholder="A single key adjustment to carry forward..."></textarea>
+      </div>
+      <div class="field">
+        <label for="reviewNext">Top 3 priorities for next week</label>
+        <textarea id="reviewNext" placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea>
+      </div>
+      <button class="btn" id="saveReview">Save Weekly Review</button>
+    </section>
+
+    <section class="card">
+      <h3>Review Archive</h3>
+      <p class="desc">Past saved weekly reflections and key learnings.</p>
+      <div id="recentHistory"></div>
+    </section>
+  </div>
+</section>
+
+<!-- PAGE 10: ACCOUNT & CLOUD SETTINGS -->
+<section class="page" id="page-settings">
+  <div class="grid">
+    <section class="card">
+      <div class="row between">
+        <h3>User Profile & Account</h3>
+        <span class="pill green" id="cloudSyncStatusBadge">Local Storage</span>
+      </div>
+      <p class="desc">Manage your profile, authentication PIN lock, and cloud database connection.</p>
+      
+      <div class="formgrid">
+        <div class="field">
+          <label for="nameInput">Full Name / Greeting</label>
+          <input id="nameInput" maxlength="40" value="Rohan">
+        </div>
+        <div class="field">
+          <label for="accountEmailInput">Account Email</label>
+          <input id="accountEmailInput" type="email" placeholder="rohan@example.com">
+        </div>
+      </div>
+
+      <div class="formgrid">
+        <div class="field">
+          <label for="pinLockInput">4-Digit Security PIN (Optional)</label>
+          <input id="pinLockInput" type="password" maxlength="4" placeholder="e.g. 1234 (Leave blank for none)">
+        </div>
+        <div class="field">
+          <label for="workHours">Work Schedule</label>
+          <input id="workHours" maxlength="100" value="Weekdays · 10:30 AM–8:00 PM">
+        </div>
+      </div>
+
+      <h4 style="font-size:0.95rem; margin:16px 0 6px">☁️ Free Cloud Sync (Supabase / Database)</h4>
+      <p class="small muted">Connect your free Supabase project to automatically sync data between your work laptop and phone.</p>
+      
+      <div class="field">
+        <label for="supabaseUrlInput">Supabase Project URL</label>
+        <input id="supabaseUrlInput" placeholder="https://xyzcompany.supabase.co">
+      </div>
+      <div class="field">
+        <label for="supabaseKeyInput">Supabase Anon Public Key</label>
+        <input id="supabaseKeyInput" type="password" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+      </div>
+
+      <div class="row" style="margin-top:14px; gap:8px; flex-wrap:wrap">
+        <button class="btn" id="saveAccountSettingsBtn">Save Account Settings</button>
+        <button class="btn secondary" id="testCloudSyncBtn">☁️ Push to Cloud (Sync)</button>
+        <button class="btn ghost" id="pullCloudSyncBtn">📥 Restore from Cloud</button>
+      </div>
+      <div style="margin-top:10px">
+        <a href="javascript:void(0)" id="showSupabaseSqlLink" style="color:var(--accent); font-size:0.83rem; text-decoration:none; font-weight:600">📋 Click here for 1-Minute Supabase Setup Guide & SQL</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Backup & Restore Data</h3>
+      <p class="desc">Manual export and import to keep offline backups.</p>
+      <div class="stack">
+        <button class="btn" id="exportBackup">Export All Data (JSON Backup)</button>
+        <label class="btn secondary" for="importBackup" style="text-align:center;cursor:pointer">
+          Import Backup (JSON)
+          <input id="importBackup" type="file" accept=".json,application/json" hidden>
+        </label>
+        <button class="btn ghost" id="exportTasks">Export Tasks History (CSV)</button>
+        <button class="btn ghost" id="exportDsa">Export DSA Problem Log (CSV)</button>
+      </div>
+      <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+      <div class="row" style="gap:8px">
+        <button class="btn secondary" id="clearDemoDataBtn" style="flex:1">🧹 Clear Demo Data (Start Fresh)</button>
+        <button class="btn danger" id="resetAll" style="flex:1">Reset All</button>
+      </div>
+
+      <div style="margin-top:22px; padding:14px; background:var(--bg); border:1px solid var(--line); border-radius:12px; text-align:center">
+        <div style="font-weight:800; font-size:0.92rem">GoalOS Pro Edition</div>
+        <div class="small muted" style="margin-top:4px">Designed & Engineered by <a href="https://github.com/rohanchoudhary5210" target="_blank" rel="noopener" style="color:var(--accent); font-weight:750; text-decoration:none">Rohan Choudhary</a> (<a href="https://github.com/rohanchoudhary5210" target="_blank" rel="noopener" style="color:var(--accent)">@rohanchoudhary5210</a>)</div>
+      </div>
+    </section>
+  </div>
+</section>
+
+<footer class="footer">
+  GoalOS · Designed & Engineered by <a href="https://github.com/rohanchoudhary5210" target="_blank" rel="noopener" style="color:var(--accent); font-weight:750; text-decoration:none">Rohan Choudhary</a> · All Rights Reserved
+</footer>
 </main>
 
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<!-- Universal Custom Modal -->
+<div class="modal-overlay" id="appModalOverlay" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <button class="modal-close-btn" id="modalCloseCrossBtn" title="Close modal" aria-label="Close">×</button>
+    <h3 id="modalTitle">Notice</h3>
+    <div id="modalContent"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" id="modalCancelBtn">Cancel</button>
+      <button class="btn" id="modalConfirmBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
 
 <script>
 (() => {
-  const $ = id => document.getElementById(id);
-  const today = () => new Date().toLocaleDateString('en-CA');
-  let currentDate = today();
-  let db = {};
-  let chartMode = 'water'; // 'water' or 'activity'
+const $ = id => document.getElementById(id);
+const today = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+};
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 
-  const defaultFavorites = [
-    { name: '2 Roti + Dal', calories: 330, protein: 11, meal: 'Lunch' },
-    { name: '2 Boiled Eggs', calories: 140, protein: 12, meal: 'Breakfast' },
-    { name: 'Whey Protein Scoop', calories: 130, protein: 24, meal: 'Snack' },
-    { name: 'Oats with Milk', calories: 280, protein: 11, meal: 'Breakfast' },
-    { name: 'Paneer Salad Bowl', calories: 240, protein: 14, meal: 'Dinner' }
+// Preloaded starter flashcards
+const defaultCards = [
+  {
+    id: 'fc1',
+    category: 'DSA Template',
+    question: 'Sliding Window Pattern: When to use it & what is the standard 2-pointer window template?',
+    answer: '<b>When:</b> Subarrays/substrings with contiguous conditions (max sum, longest valid, min size).<br><br><code>int l = 0;<br>for(int r = 0; r < n; r++) {<br>  // 1. expand window: add arr[r]<br>  while(!conditionValid) {<br>    // 2. shrink window: remove arr[l++]<br>  }<br>  // 3. update result<br>}</code><br><b>Complexity:</b> O(n) time, O(1) space.',
+    level: 1
+  },
+  {
+    id: 'fc2',
+    category: 'DSA Template',
+    question: 'Binary Search on Answer Space: When to apply and what is the invariant?',
+    answer: '<b>When:</b> When searching for min/max value satisfying condition f(x) where f is monotonic (false...false, true...true).<br><br><code>int low = minVal, high = maxVal, ans = -1;<br>while(low <= high) {<br>  int mid = low + (high - low) / 2;<br>  if(isValid(mid)) {<br>    ans = mid;<br>    high = mid - 1; // or low = mid + 1<br>  } else low = mid + 1;<br>}</code>',
+    level: 2
+  },
+  {
+    id: 'fc3',
+    category: 'Game Architecture',
+    question: 'ECS (Entity Component System): Why does it offer superior cache locality over standard OOP GameObjects?',
+    answer: '<b>OOP:</b> Entities store pointers, methods, and heterogeneous data scattered across heap RAM (cache misses).<br><br><b>ECS:</b><br>• <b>Entity:</b> Just an ID.<br>• <b>Component:</b> Pure contiguous POD data structs (e.g. Transform[], Velocity[]).<br>• <b>System:</b> Iterates sequentially over contiguous memory arrays, maximizing CPU L1/L2 cache line hits and SIMD vectorization.',
+    level: 1
+  },
+  {
+    id: 'fc4',
+    category: 'Game Architecture',
+    question: 'Draw Call Optimization: What causes draw calls, and what are 3 key mitigation techniques?',
+    answer: '<b>Cause:</b> CPU telling GPU to render a mesh/material with state changes.<br><br><b>Mitigations:</b><br>1. <b>Static & Dynamic Batching:</b> Combining identical meshes into single buffer.<br>2. <b>GPU Instancing:</b> Render multiple instances of same mesh with per-instance data.<br>3. <b>Texture Atlasing:</b> Merging textures to share materials and avoid shader swaps.',
+    level: 1
+  },
+  {
+    id: 'fc5',
+    category: 'Shaders & Math',
+    question: 'Dot Product in Graphics: Geometric meaning & Lambertian Diffuse reflection formula?',
+    answer: '<b>Dot Product:</b> a · b = |a||b| cos(θ). Measures alignment. If normalized, yields cos(angle).<br><br><b>Lambertian Diffuse:</b><br><code>Diffuse = max(0.0, dot(Normal, LightDir)) * LightColor * Albedo;</code><br>Returns 1.0 when surface directly faces light, 0.0 when perpendicular or back-facing.',
+    level: 2
+  },
+  {
+    id: 'fc6',
+    category: 'Game Architecture',
+    question: 'Object Pooling Pattern: Why is it crucial in garbage-collected engines like Unity (C#) or Java?',
+    answer: '<b>Why:</b> Frequent <code>Instantiate/new</code> and <code>Destroy</code> creates heap allocations that trigger the non-deterministic Garbage Collector (causing micro-stutters and frame drops).<br><br><b>Solution:</b> Pre-allocate fixed pool array of projectiles/particles, toggle active state, and recycle.',
+    level: 2
+  }
+];
+
+// Default State
+const defaults = {
+  settings: {
+    name: 'Alex Hunter',
+    email: 'demo@goalos.app',
+    pin: '1234',
+    workHours: 'Weekdays · 10:30 AM–8:00 PM',
+    theme: 'dark',
+    soundEnabled: true,
+    targetWeight: 75,
+    leetcodeUsername: '',
+    supabaseUrl: '',
+    supabaseKey: ''
+  },
+  flashcards: clone(defaultCards),
+  goals: [
+    {
+      id: 'g1',
+      title: 'Become a stronger Game Engineer',
+      area: 'Game Engineering',
+      why: 'Build transferable engineering skills through architecture, gameplay systems, profiling and shipping projects.',
+      target: '',
+      progress: 25,
+      subtasks: [
+        { id: 's1', title: 'Implement custom character controller state machine', done: true },
+        { id: 's2', title: 'Write spatial grid partitioner for collision check', done: false },
+        { id: 's3', title: 'Profile CPU frame bottlenecks with Tracy/Profiler', done: false },
+        { id: 's4', title: 'Ship playable demo build to itch.io', done: false }
+      ]
+    },
+    {
+      id: 'g2',
+      title: 'Build interview readiness with DSA',
+      area: 'DSA & Interviews',
+      why: 'Solve 1 Java LeetCode problem daily and maintain concise pattern notes.',
+      target: '',
+      progress: 20,
+      subtasks: [
+        { id: 's5', title: 'Master Two Pointers & Sliding Window (15 problems)', done: true },
+        { id: 's6', title: 'Binary Search on answer space templates', done: false },
+        { id: 's7', title: 'Graph BFS/DFS shortest path & cycle detection', done: false },
+        { id: 's8', title: '0/1 Knapsack & Longest Common Subsequence DP', done: false }
+      ]
+    },
+    {
+      id: 'g3',
+      title: 'Build a Game-Dev Personal Brand',
+      area: 'Content & Personal Brand',
+      why: 'Publish devlogs, lessons learned, and real architecture breakdowns.',
+      target: '',
+      progress: 10,
+      subtasks: [
+        { id: 's9', title: 'Draft script for Devlog #1', done: true },
+        { id: 's10', title: 'Record screen capture of gameplay prototype', done: false },
+        { id: 's11', title: 'Publish devlog video or LinkedIn engineering post', done: false }
+      ]
+    },
+    {
+      id: 'g4',
+      title: 'Reach 75 kg sustainably',
+      area: 'Health',
+      why: 'Build repeatable nutrition, hydration, and comfortable movement habits.',
+      target: '',
+      progress: 10,
+      subtasks: [
+        { id: 's12', title: 'Maintain 8 glasses of water daily', done: true },
+        { id: 's13', title: 'Weekly morning weight check-in logging', done: true },
+        { id: 's14', title: '20-minute brisk walk after 8:00 PM shift', done: false }
+      ]
+    }
+  ],
+  habits: [
+    { id: 'h1', title: 'Solve 1 LeetCode problem in Java', area: 'Learning' },
+    { id: 'h2', title: 'Write/update DSA pattern notes', area: 'Learning' },
+    { id: 'h3', title: 'Focused Game Engineering session (Systems/Code)', area: 'Career' },
+    { id: 'h4', title: 'Move forward on a game project milestone', area: 'Career' },
+    { id: 'h5', title: 'Content action (script, clip, or devlog note)', area: 'Content' },
+    { id: 'h6', title: 'Health check-in (fluids, wholesome food, walk)', area: 'Health' }
+  ],
+  tasks: [
+    { id: 't1', title: 'LeetCode in Java', category: 'DSA & Interviews', priority: 'high', note: '1 problem: pattern, approach & complexity.', done: false },
+    { id: 't2', title: 'Update DSA notes', category: 'DSA & Interviews', priority: 'med', note: 'Record key edge cases and time/space complexity.', done: false },
+    { id: 't3', title: 'Game Engineering deep work', category: 'Game Engineering', priority: 'high', note: 'Architecture, core mechanics, profiling, or bug fix.', done: false },
+    { id: 't4', title: 'Move 1 project milestone forward', category: 'Game Engineering', priority: 'med', note: 'Ship a tangible code commit or prototype update.', done: false },
+    { id: 't5', title: 'Health & hydration check', category: 'Health', priority: 'low', note: '8 glasses of water & comfortable daily movement.', done: false }
+  ],
+  dsa: [
+    { id: 'd1', title: '1. Two Sum', difficulty: 'Easy', topic: 'Arrays & Two Pointers', date: today(), link: 'https://leetcode.com/problems/two-sum/', notes: 'Use HashMap for O(n) one-pass lookup.' },
+    { id: 'd2', title: '217. Contains Duplicate', difficulty: 'Easy', topic: 'Arrays & Two Pointers', date: today(), link: '', notes: 'HashSet check in O(n) time, O(n) space.' }
+  ],
+  kanban: [
+    { id: 'k1', title: 'Character Controller & State Machine', status: 'shipped', category: 'Game Engineering', notes: 'Walk, run, jump, and coyote time mechanics implemented.' },
+    { id: 'k2', title: 'Inventory & Item Pickup System', status: 'in_progress', category: 'Game Engineering', notes: 'ScriptableObject data architecture and UI bindings.' },
+    { id: 'k3', title: 'Sound FX & Audio Manager Integration', status: 'todo', category: 'Game Engineering', notes: 'Spatial audio emitters and volume mixers.' },
+    { id: 'k4', title: 'Devlog #1 Video Outline & Clips', status: 'todo', category: 'Content', notes: 'Capture gameplay video clips and record voiceover.' }
+  ],
+  weightLogs: [
+    { id: 'w1', date: '2026-09-15', weight: 83.2, notes: 'Starting log' },
+    { id: 'w2', date: '2026-09-22', weight: 82.5, notes: 'Good hydration' },
+    { id: 'w3', date: '2026-09-29', weight: 81.8, notes: 'Consistent walking' },
+    { id: 'w4', date: '2026-10-06', weight: 81.1, notes: 'Steady progress' }
+  ],
+  days: {},
+  reflections: {},
+  reviews: {}
+};
+
+let state;
+let currentTaskFilter = 'all';
+let currentFlashcardIndex = 0;
+
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+// State Management
+function load() {
+  try {
+    const raw = localStorage.getItem('goalOS_v1');
+    if (raw) {
+      const s = JSON.parse(raw);
+      state = {
+        ...clone(defaults),
+        ...s,
+        settings: { ...defaults.settings, ...(s.settings || {}) },
+        flashcards: s.flashcards !== undefined ? s.flashcards : clone(defaultCards),
+        dsa: s.dsa !== undefined ? s.dsa : clone(defaults.dsa),
+        kanban: s.kanban !== undefined ? s.kanban : clone(defaults.kanban),
+        weightLogs: s.weightLogs !== undefined ? s.weightLogs : clone(defaults.weightLogs),
+        habits: s.habits !== undefined ? s.habits : clone(defaults.habits),
+        goals: (s.goals !== undefined ? s.goals : defaults.goals).map(g => ({
+          ...g,
+          subtasks: g.subtasks || []
+        }))
+      };
+    } else {
+      state = clone(defaults);
+    }
+  } catch(e) {
+    state = clone(defaults);
+  }
+}
+
+function save() {
+  localStorage.setItem('goalOS_v1', JSON.stringify(state));
+  render();
+}
+
+function getTodayData() {
+  const t = today();
+  if (!state.days[t]) {
+    state.days[t] = {
+      tasks: clone(state.tasks),
+      habits: {},
+      water: 0,
+      northStar: { title: 'Solve 1 Java DSA problem & work on Game Engine', done: false }
+    };
+  }
+  if (state.days[t].water === undefined) state.days[t].water = 0;
+  if (!state.days[t].northStar) {
+    state.days[t].northStar = { title: 'Solve 1 Java DSA problem & work on Game Engine', done: false };
+  }
+  return state.days[t];
+}
+
+// UI Helpers
+function toast(msg) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// Sound Effects via Web Audio API
+function playSound(type) {
+  if (!state.settings.soundEnabled) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = ctx.currentTime;
+    if (type === 'done') {
+      [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = f;
+        gain.gain.setValueAtTime(0.08, now + i * 0.07);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.07 + 0.25);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + i * 0.07);
+        osc.stop(now + i * 0.07 + 0.26);
+      });
+    } else if (type === 'timer') {
+      [880, 0, 880, 0, 1046.5].forEach((f, i) => {
+        if (f > 0) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = f;
+          gain.gain.setValueAtTime(0.12, now + i * 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.12 + 0.18);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + i * 0.12);
+          osc.stop(now + i * 0.12 + 0.19);
+        }
+      });
+    }
+  } catch(e){}
+}
+
+function launchConfetti() {
+  const canvas = $('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const particles = [];
+  const colors = ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#3b82f6'];
+
+  for (let i = 0; i < 70; i++) {
+    particles.push({
+      x: canvas.width * 0.5,
+      y: canvas.height * 0.4,
+      vx: (Math.random() - 0.5) * 14,
+      vy: (Math.random() - 0.8) * 14,
+      size: Math.random() * 8 + 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      alpha: 1,
+      rotation: Math.random() * 360,
+      vRot: (Math.random() - 0.5) * 10
+    });
+  }
+
+  function frame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.35;
+      p.alpha -= 0.015;
+      p.rotation += p.vRot;
+      if (p.alpha > 0) {
+        alive = true;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        ctx.restore();
+      }
+    });
+    if (alive) requestAnimationFrame(frame);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  requestAnimationFrame(frame);
+}
+
+// Modal dialogs
+let modalCallback = null;
+let modalCanDismiss = true;
+function openModal({ title, bodyHtml, confirmText = 'Confirm', showCancel = true, onConfirm }) {
+  $('modalTitle').textContent = title;
+  $('modalContent').innerHTML = bodyHtml;
+  $('modalConfirmBtn').textContent = confirmText;
+  $('modalCancelBtn').style.display = showCancel ? 'inline-block' : 'none';
+  $('modalCloseCrossBtn').style.display = showCancel ? 'inline-block' : 'none';
+  modalCanDismiss = showCancel;
+  modalCallback = onConfirm;
+  $('appModalOverlay').classList.add('show');
+  const inputs = $('modalContent').querySelectorAll('input, select, textarea');
+  if (inputs.length) {
+    setTimeout(() => inputs[0].focus(), 50);
+    inputs.forEach(inp => {
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && inp.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+          $('modalConfirmBtn').click();
+        }
+      });
+    });
+  }
+}
+function closeModal() {
+  if (!modalCanDismiss) return;
+  $('appModalOverlay').classList.remove('show');
+  modalCallback = null;
+}
+function forceCloseModal() {
+  modalCanDismiss = true;
+  $('appModalOverlay').classList.remove('show');
+  modalCallback = null;
+}
+$('modalCancelBtn').addEventListener('click', closeModal);
+$('modalCloseCrossBtn').addEventListener('click', closeModal);
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('appModalOverlay').classList.contains('show') && modalCanDismiss) closeModal();
+});
+$('modalConfirmBtn').addEventListener('click', () => {
+  if (modalCallback) {
+    const cb = modalCallback;
+    cb();
+  }
+  if (modalCanDismiss) {
+    $('appModalOverlay').classList.remove('show');
+  }
+});
+$('appModalOverlay').addEventListener('click', e => {
+  if (e.target === $('appModalOverlay') && modalCanDismiss) closeModal();
+});
+
+// Streaks
+function calculateDayStreak() {
+  let count = 0;
+  let dt = new Date(today() + 'T12:00:00');
+  while (true) {
+    const key = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+    const day = state.days[key];
+    const hasTask = day && (day.tasks || []).some(t => t.done);
+    const hasHabit = day && day.habits && Object.values(day.habits).some(Boolean);
+    if (!hasTask && !hasHabit) break;
+    count++;
+    dt.setDate(dt.getDate() - 1);
+  }
+  return count;
+}
+
+function calculateHabitStreak(habitId) {
+  let streak = 0;
+  let dt = new Date(today() + 'T12:00:00');
+  const todayKey = today();
+  const isDoneToday = state.days[todayKey]?.habits?.[habitId];
+  if (!isDoneToday) dt.setDate(dt.getDate() - 1);
+  while (true) {
+    const key = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+    const day = state.days[key];
+    if (day && day.habits && day.habits[habitId]) {
+      streak++;
+      dt.setDate(dt.getDate() - 1);
+    } else break;
+  }
+  return streak;
+}
+
+// SMART TASK ROLLOVER
+let pendingRolloverTasks = [];
+function checkRollover() {
+  const tKey = today();
+  const keys = Object.keys(state.days).filter(k => k < tKey).sort().reverse();
+  if (!keys.length) return;
+  const yesterdayKey = keys[0];
+  const yesterdayTasks = state.days[yesterdayKey]?.tasks || [];
+  const unfinished = yesterdayTasks.filter(t => !t.done && !t.rolledOver);
+
+  if (unfinished.length > 0) {
+    pendingRolloverTasks = unfinished;
+    $('rolloverText').textContent = `📋 You have ${unfinished.length} unfinished task${unfinished.length === 1 ? '' : 's'} from ${yesterdayKey}: "${unfinished[0].title}"${unfinished.length > 1 ? ' and others' : ''}`;
+    $('rolloverBanner').style.display = 'flex';
+  } else {
+    $('rolloverBanner').style.display = 'none';
+  }
+}
+
+$('rolloverAcceptBtn').addEventListener('click', () => {
+  const currentTasks = getTodayData().tasks;
+  pendingRolloverTasks.forEach(t => {
+    t.rolledOver = true;
+    currentTasks.push({
+      id: uid(),
+      title: t.title,
+      category: t.category || 'Personal',
+      priority: t.priority || 'med',
+      note: t.note ? `${t.note} (from yesterday)` : 'Rolled over',
+      done: false
+    });
+  });
+  $('rolloverBanner').style.display = 'none';
+  save();
+  toast('Unfinished tasks moved to today!');
+});
+
+$('rolloverDismissBtn').addEventListener('click', () => {
+  pendingRolloverTasks.forEach(t => { t.rolledOver = true; });
+  $('rolloverBanner').style.display = 'none';
+  save();
+  toast('Rollover tasks dismissed');
+});
+
+// NORTH STAR FOCUS
+function renderNorthStar() {
+  const ns = getTodayData().northStar;
+  $('northStarCheck').checked = !!ns.done;
+  $('northStarTitleText').textContent = ns.title || 'Click Edit to set your #1 priority task';
+  $('northStarTitleText').classList.toggle('done', !!ns.done);
+}
+
+$('northStarCheck').addEventListener('change', e => {
+  const ns = getTodayData().northStar;
+  ns.done = e.target.checked;
+  if (ns.done) {
+    playSound('done');
+    launchConfetti();
+    toast('🎯 North Star Focus Completed! Outstanding job!');
+  }
+  save();
+});
+
+$('editNorthStarBtn').addEventListener('click', () => {
+  const ns = getTodayData().northStar;
+  openModal({
+    title: 'Set Today\'s North Star Focus',
+    bodyHtml: `
+      <div class="field">
+        <label>Your #1 Highest Priority Task</label>
+        <input id="editNorthStarInput" value="${esc(ns.title)}" placeholder="e.g. Implement Enemy AI Pathfinding & Solve 1 DP problem">
+      </div>
+      <p class="small muted">This single task will stay pinned at the top all day to anchor your focus.</p>
+    `,
+    confirmText: 'Save Focus',
+    onConfirm: () => {
+      const v = $('editNorthStarInput').value.trim();
+      if (v) {
+        ns.title = v;
+        ns.done = false;
+        save();
+        toast('North Star focus updated');
+      }
+    }
+  });
+});
+
+// RENDER: DASHBOARD
+function renderDashboard() {
+  const day = getTodayData();
+  const tasks = day.tasks || [];
+  const done = tasks.filter(t => t.done).length;
+  const pct = tasks.length ? Math.round((done / tasks.length) * 100) : 0;
+
+  $('todayLabel').textContent = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+  $('heroCompletion').textContent = pct + '%';
+  $('heroStreak').textContent = calculateDayStreak();
+  $('heroTasks').textContent = `${done}/${tasks.length}`;
+  $('heroDsaCount').textContent = state.dsa.length;
+
+  $('doneMetric').textContent = done;
+  $('remainingMetric').textContent = tasks.length - done;
+  $('percentMetric').textContent = pct + '%';
+  $('todayProgress').style.width = pct + '%';
+
+  renderNorthStar();
+  checkRollover();
+
+  // Task Filters
+  const filteredTasks = tasks.filter(t => {
+    if (currentTaskFilter === 'all') return true;
+    if (currentTaskFilter === 'high') return t.priority === 'high';
+    return t.category === currentTaskFilter;
+  });
+
+  $('taskCounterText').textContent = `${filteredTasks.length} task${filteredTasks.length === 1 ? '' : 's'}`;
+
+  $('todayTasks').innerHTML = filteredTasks.length ? filteredTasks.map(t => {
+    const pTag = t.priority === 'high' ? '<span class="priority-tag priority-high">High</span>' : (t.priority === 'low' ? '<span class="priority-tag priority-low">Low</span>' : '<span class="priority-tag priority-med">Med</span>');
+    return `
+      <div class="task ${t.done ? 'done' : ''}">
+        <input type="checkbox" data-task-check="${t.id}" ${t.done ? 'checked' : ''} aria-label="Toggle task">
+        <div class="task-main">
+          <div class="task-title">${esc(t.title)}</div>
+          <div class="task-meta">
+            ${pTag}
+            <span>${esc(t.category || 'Personal')}</span>
+            ${t.note ? `<span>· ${esc(t.note)}</span>` : ''}
+          </div>
+        </div>
+        <div class="task-actions">
+          <button class="iconbtn" data-task-edit="${t.id}" title="Edit task">✎</button>
+          <button class="iconbtn" data-task-delete="${t.id}" title="Delete task">×</button>
+        </div>
+      </div>
+    `;
+  }).join('') : '<div class="empty">No tasks found for this filter. Add one below!</div>';
+
+  // Weekly mini calendar
+  const weekDates = [];
+  for (let i = 6; i >= 0; i--) {
+    const dt = new Date(today() + 'T12:00:00');
+    dt.setDate(dt.getDate() - i);
+    weekDates.push(`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`);
+  }
+  const activeCount = weekDates.filter(k => {
+    const d = state.days[k];
+    return d && ((d.tasks || []).some(t => t.done) || Object.values(d.habits || {}).some(Boolean));
+  }).length;
+  $('weekScore').textContent = `${activeCount}/7 active days`;
+  $('weekGrid').innerHTML = weekDates.map(k => {
+    const d = state.days[k];
+    const n = d ? (d.tasks || []).filter(t => t.done).length : 0;
+    const tot = d ? (d.tasks || []).length : 0;
+    const isDone = d && ((d.tasks || []).some(t => t.done) || Object.values(d.habits || {}).some(Boolean));
+    return `
+      <div class="daybox ${isDone ? 'done' : ''} ${k === today() ? 'today' : ''}">
+        <div class="dayname">${new Date(k + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'short' })}</div>
+        <strong>${n}/${tot}</strong>
+        <div class="dot"></div>
+      </div>
+    `;
+  }).join('');
+
+  renderHeatmap();
+  renderWater();
+
+  const r = state.reflections[today()] || {};
+  $('win').value = r.win || '';
+  $('blocker').value = r.blocker || '';
+}
+
+// RENDER: VISUAL ANALYTICS
+function renderAnalytics() {
+  // 1. Weekly comparison
+  const now = new Date(today() + 'T12:00:00');
+  let thisWeekDone = 0, thisWeekTotal = 0;
+  let lastWeekDone = 0, lastWeekTotal = 0;
+
+  for (let i = 0; i < 7; i++) {
+    const dt = new Date(now);
+    dt.setDate(dt.getDate() - i);
+    const key = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+    const d = state.days[key];
+    if (d && d.tasks) {
+      thisWeekTotal += d.tasks.length;
+      thisWeekDone += d.tasks.filter(t => t.done).length;
+    }
+  }
+
+  for (let i = 7; i < 14; i++) {
+    const dt = new Date(now);
+    dt.setDate(dt.getDate() - i);
+    const key = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+    const d = state.days[key];
+    if (d && d.tasks) {
+      lastWeekTotal += d.tasks.length;
+      lastWeekDone += d.tasks.filter(t => t.done).length;
+    }
+  }
+
+  const thisRate = thisWeekTotal ? Math.round((thisWeekDone / thisWeekTotal) * 100) : 0;
+  const lastRate = lastWeekTotal ? Math.round((lastWeekDone / lastWeekTotal) * 100) : 0;
+  const diff = thisRate - lastRate;
+
+  $('analyticsThisWeekRate').textContent = thisRate + '%';
+  $('analyticsLastWeekRate').textContent = lastRate + '%';
+  $('analyticsComparePill').textContent = `${diff >= 0 ? '+' : ''}${diff}% vs Last Week`;
+  $('analyticsComparePill').className = `pill ${diff >= 0 ? 'green' : 'red'}`;
+
+  // Total finished all time
+  let allDone = 0;
+  let catCounts = { 'DSA & Interviews': 0, 'Game Engineering': 0, 'Health': 0, 'Personal': 0 };
+  Object.values(state.days).forEach(d => {
+    (d.tasks || []).forEach(t => {
+      if (t.done) {
+        allDone++;
+        const c = t.category || 'Personal';
+        catCounts[c] = (catCounts[c] || 0) + 1;
+      }
+    });
+  });
+  $('analyticsTotalDoneCount').textContent = allDone;
+
+  // Effort distribution bar
+  const totalCat = Object.values(catCounts).reduce((a, b) => a + b, 0) || 1;
+  const dsaPct = Math.round((catCounts['DSA & Interviews'] / totalCat) * 100);
+  const gamePct = Math.round((catCounts['Game Engineering'] / totalCat) * 100);
+  const healthPct = Math.round((catCounts['Health'] / totalCat) * 100);
+  const persPct = 100 - dsaPct - gamePct - healthPct;
+
+  $('effortBar').innerHTML = `
+    <div style="width:${dsaPct}%; background:#818cf8" title="DSA: ${dsaPct}%"></div>
+    <div style="width:${gamePct}%; background:#f59e0b" title="Game Dev: ${gamePct}%"></div>
+    <div style="width:${healthPct}%; background:#10b981" title="Health: ${healthPct}%"></div>
+    <div style="width:${Math.max(0, persPct)}%; background:#0284c7" title="Personal: ${persPct}%"></div>
+  `;
+
+  $('effortLegend').innerHTML = `
+    <span>🧠 DSA: <strong>${dsaPct}%</strong></span>
+    <span>🎮 Game Dev: <strong>${gamePct}%</strong></span>
+    <span>🏃 Health: <strong>${healthPct}%</strong></span>
+    <span>👤 Personal: <strong>${Math.max(0, persPct)}%</strong></span>
+  `;
+
+  // 2. SVG Weight Trajectory Chart
+  renderWeightSvgChart();
+
+  // 3. DSA Interview Readiness Matrix
+  renderDsaMatrix();
+}
+
+// RENDER: WEIGHT SVG CHART
+function renderWeightSvgChart() {
+  const logs = [...(state.weightLogs || [])].sort((a,b) => a.date.localeCompare(b.date));
+  const svg = $('weightSvgChart');
+  const target = state.settings.targetWeight || 75;
+
+  if (logs.length < 2) {
+    svg.innerHTML = `<text x="300" y="100" fill="var(--muted)" font-size="14" text-anchor="middle">Log at least 2 weight entries in Health tab to draw trajectory curve.</text>`;
+    return;
+  }
+
+  const weights = logs.map(l => l.weight);
+  const minW = Math.min(...weights, target) - 1.5;
+  const maxW = Math.max(...weights, target) + 1.5;
+
+  const w = 600, h = 200, padX = 50, padY = 25;
+  const chartW = w - padX * 2, chartH = h - padY * 2;
+
+  const getY = val => padY + chartH - ((val - minW) / (maxW - minW)) * chartH;
+  const getX = idx => padX + (idx / (logs.length - 1)) * chartW;
+
+  const targetY = getY(target);
+
+  // Generate path
+  const points = logs.map((l, idx) => ({ x: getX(idx), y: getY(l.weight), val: l.weight, date: l.date }));
+  const pathD = points.reduce((acc, p, i) => `${acc} ${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`, '');
+
+  let dotsSvg = '';
+  points.forEach(p => {
+    dotsSvg += `
+      <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4.5" fill="#0284c7" stroke="#ffffff" stroke-width="2"/>
+      <text x="${p.x.toFixed(1)}" y="${(p.y - 8).toFixed(1)}" fill="var(--ink)" font-size="10" font-weight="700" text-anchor="middle">${p.val}kg</text>
+    `;
+  });
+
+  svg.innerHTML = `
+    <!-- Grid & Target Line -->
+    <line x1="${padX}" y1="${targetY}" x2="${w - padX}" y2="${targetY}" stroke="#10b981" stroke-width="1.5" stroke-dasharray="5,5"/>
+    <text x="${w - padX + 5}" y="${targetY + 4}" fill="#10b981" font-size="11" font-weight="800">${target} kg Target</text>
+    
+    <!-- Weight Trend Line -->
+    <path d="${pathD}" fill="none" stroke="#0284c7" stroke-width="3" stroke-linecap="round"/>
+    ${dotsSvg}
+  `;
+}
+
+// RENDER: DSA READINESS MATRIX
+function renderDsaMatrix() {
+  const topics = [
+    { name: 'Arrays & Two Pointers', target: 12 },
+    { name: 'Sliding Window & Stack', target: 8 },
+    { name: 'Binary Search', target: 8 },
+    { name: 'Trees & BST', target: 10 },
+    { name: 'Graphs (BFS/DFS)', target: 10 },
+    { name: 'Dynamic Programming', target: 12 }
   ];
 
-  const defaultSettings = () => ({
-    waterGoal: 2500,
-    calorieGoal: 1800,
-    proteinGoal: 85,
-    targetWeight: 75.0,
-    theme: 'light',
-    favorites: defaultFavorites.slice(),
-    fasting: { active: false, startTime: null, targetHours: 16 }
-  });
+  let totalSolved = 0, totalTarget = 0;
 
-  const blank = () => ({
-    water: [],
-    foods: [],
-    workouts: [], // { id, type, name, duration, burned, intensity, time }
-    weights: [],
-    steps: 0,
-    exercise: 0,
-    sleep: '',
-    vitals: { bp: '', pulse: '', energy: 'Good' },
-    habits: [],
-    notes: ''
-  });
+  const html = topics.map(t => {
+    const solved = state.dsa.filter(d => d.topic === t.name).length;
+    totalSolved += solved;
+    totalTarget += t.target;
+    const pct = Math.min(100, Math.round((solved / t.target) * 100));
+    const status = pct >= 70 ? '<span class="pill green" style="font-size:0.7rem">🟢 Strong</span>' : (pct >= 30 ? '<span class="pill orange" style="font-size:0.7rem">🟡 In Progress</span>' : '<span class="pill red" style="font-size:0.7rem">🔴 Needs Focus</span>');
 
-  function loadDb(){
-    try {
-      db = JSON.parse(localStorage.getItem('healthTrackerV1') || '{}') || {};
-    } catch {
-      db = {};
+    return `
+      <div class="matrix-row">
+        <div style="flex:1; min-width:0">
+          <div class="row between" style="margin-bottom:4px">
+            <strong style="font-size:0.88rem">${esc(t.name)}</strong>
+            <span>${status}</span>
+          </div>
+          <div class="progress" style="height:7px"><div style="width:${pct}%"></div></div>
+          <span class="small muted">${solved} / ${t.target} mastered</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const overall = Math.min(100, Math.round((totalSolved / totalTarget) * 100));
+  $('dsaReadinessScore').textContent = `${overall}% Ready`;
+  $('dsaMatrixContainer').innerHTML = html;
+}
+
+// LIVE LEETCODE SYNC
+$('syncLeetcodeBtn').addEventListener('click', async () => {
+  const username = $('leetcodeUserInput').value.trim() || state.settings.leetcodeUsername;
+  if (!username) {
+    toast('Please enter a LeetCode username first');
+    return;
+  }
+  state.settings.leetcodeUsername = username;
+  save();
+
+  $('syncLeetcodeBtn').textContent = 'Fetching...';
+  try {
+    const res = await fetch(`https://leetcode-stats-api.herokuapp.com/${username}`);
+    const data = await res.json();
+    if (data.status === 'success' || data.totalSolved !== undefined) {
+      state.settings.leetcodeStats = {
+        easy: Number(data.easySolved) || 0,
+        medium: Number(data.mediumSolved) || 0,
+        hard: Number(data.hardSolved) || 0,
+        total: Number(data.totalSolved) || 0
+      };
+      save();
+      toast(`Synced: ${data.totalSolved} problems solved on LeetCode!`);
+      playSound('done');
+      launchConfetti();
+    } else {
+      toast('Could not find user or profile is private');
     }
-    if (!db._settings) db._settings = defaultSettings();
-    if (!db._settings.favorites) db._settings.favorites = defaultFavorites.slice();
-    if (!db._settings.fasting) db._settings.fasting = { active: false, startTime: null, targetHours: 16 };
-    
-    applyTheme(db._settings.theme || 'light');
+  } catch(e) {
+    toast('LeetCode sync completed from local logs');
+  } finally {
+    $('syncLeetcodeBtn').textContent = '🔄 Sync Live Stats';
   }
+});
 
-  function saveDb(){
-    localStorage.setItem('healthTrackerV1', JSON.stringify(db));
-    render();
-  }
+// RENDER: GOALS WITH SUBTASKS
+function renderGoals() {
+  $('goalsTotalCount').textContent = `${state.goals.length} Goals`;
+  $('goalCards').innerHTML = state.goals.map(g => {
+    const subtasks = g.subtasks || [];
+    const doneSub = subtasks.filter(s => s.done).length;
+    const autoProgress = subtasks.length ? Math.round((doneSub / subtasks.length) * 100) : g.progress;
+    g.progress = autoProgress;
 
-  function day(dateKey = currentDate){
-    if(!db[dateKey]) db[dateKey] = blank();
-    if(!db[dateKey].workouts) db[dateKey].workouts = [];
-    if(!db[dateKey].vitals) db[dateKey].vitals = { bp: '', pulse: '', energy: 'Good' };
-    if(!db[dateKey].habits) db[dateKey].habits = [];
-    return db[dateKey];
-  }
-
-  function settings(){
-    if (!db._settings) db._settings = defaultSettings();
-    return db._settings;
-  }
-
-  function toast(msg){
-    const t = $('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    clearTimeout(t._timer);
-    t._timer = setTimeout(() => t.classList.remove('show'), 2000);
-  }
-
-  function esc(s){
-    return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  }
-
-  function applyTheme(theme){
-    document.documentElement.setAttribute('data-theme', theme);
-    $('themeToggle').textContent = theme === 'dark' ? '☀️ Light' : '🌙 Dark';
-    settings().theme = theme;
-  }
-
-  function toggleTheme(){
-    const current = document.documentElement.getAttribute('data-theme') || 'light';
-    const next = current === 'dark' ? 'light' : 'dark';
-    applyTheme(next);
-    saveDb();
-  }
-
-  function totalWater(d = day()){
-    return (d.water || []).reduce((n, x) => n + (Number(x.ml) || 0), 0);
-  }
-
-  function knownCalories(d = day()){
-    return (d.foods || []).reduce((n, x) => n + (Number.isFinite(x.calories) ? x.calories : 0), 0);
-  }
-
-  function totalProtein(d = day()){
-    return (d.foods || []).reduce((n, x) => n + (Number.isFinite(x.protein) ? x.protein : 0), 0);
-  }
-
-  function totalWorkoutMins(d = day()){
-    const fromWorkouts = (d.workouts || []).reduce((n, x) => n + (Number(x.duration) || 0), 0);
-    return Math.max(fromWorkouts, Number(d.exercise) || 0);
-  }
-
-  function totalWorkoutBurned(d = day()){
-    return (d.workouts || []).reduce((n, x) => n + (Number(x.burned) || 0), 0);
-  }
-
-  function calculateStreak(){
-    let streak = 0;
-    const checkDate = new Date();
-    for (let i = 0; i < 120; i++) {
-      const d = new Date(checkDate);
-      d.setDate(d.getDate() - i);
-      const k = d.toLocaleDateString('en-CA');
-      const entry = db[k];
-      const hasData = entry && (
-        (entry.water && entry.water.length > 0) ||
-        (entry.foods && entry.foods.length > 0) ||
-        (entry.workouts && entry.workouts.length > 0) ||
-        (entry.weights && entry.weights.length > 0) ||
-        (entry.steps > 0)
-      );
-
-      if (hasData) {
-        streak++;
-      } else {
-        if (i === 0) continue;
-        break;
-      }
-    }
-    return Math.max(1, streak);
-  }
-
-  // Calculate 7-Day Consistency Compliance Score (0 - 100%)
-  function calculateWeeklyScore(){
-    const baseDate = new Date(currentDate + 'T00:00:00');
-    let waterDays = 0;
-    let workoutDays = 0;
-    let foodDays = 0;
-    let sleepDays = 0;
-
-    const wGoal = Number(settings().waterGoal) || 2500;
-
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(baseDate);
-      d.setDate(d.getDate() - i);
-      const k = d.toLocaleDateString('en-CA');
-      const entry = db[k];
-      if (!entry) continue;
-
-      if (totalWater(entry) >= wGoal) waterDays++;
-      if ((entry.workouts && entry.workouts.length > 0) || totalWorkoutMins(entry) >= 25) {
-        workoutDays++;
-      }
-      if (entry.foods && entry.foods.length > 0) {
-        foodDays++;
-      }
-      const sVal = parseFloat(entry.sleep);
-      if (!isNaN(sVal) && sVal >= 7) {
-        sleepDays++;
-      }
-    }
-
-    const workoutPts = Math.min(35, (workoutDays / 5) * 35);
-    const waterPts = (waterDays / 7) * 30;
-    const foodPts = (foodDays / 7) * 20;
-    const sleepPts = (sleepDays / 7) * 15;
-
-    const totalScore = Math.min(100, Math.round(workoutPts + waterPts + foodPts + sleepPts));
-
-    let grade = '🌱 Building Momentum';
-    if (totalScore >= 85) grade = '🏆 Elite Consistency ⭐';
-    else if (totalScore >= 70) grade = '🔥 Strong Discipline';
-    else if (totalScore >= 50) grade = '💪 Good Progress';
-
-    return { totalScore, grade, waterDays, workoutDays, foodDays, sleepDays };
-  }
-
-  function renderFavorites(){
-    const favs = settings().favorites || [];
-    const container = $('favChips');
-    if (!favs.length) {
-      container.innerHTML = '<small style="color:var(--muted)">No favorites saved yet. Add foods below and click ⭐ Save as Favorite.</small>';
-      return;
-    }
-    container.innerHTML = favs.map((f, idx) => `
-      <div class="chip" data-fav-idx="${idx}" title="Click to add ${esc(f.name)}">
-        <span>${esc(f.name)} (${f.calories || 0} kcal, ${f.protein || 0}g P)</span>
-        <span class="chip-del" data-del-fav="${idx}" title="Delete favorite">×</span>
+    const subHtml = subtasks.map(s => `
+      <div class="subtask-item ${s.done ? 'done' : ''}" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <label style="display:flex;align-items:center;gap:8px;flex:1;cursor:pointer;overflow:hidden;margin:0">
+          <input type="checkbox" data-subtask-check="${g.id}:${s.id}" ${s.done ? 'checked' : ''}>
+          <span style="overflow:hidden;text-overflow:ellipsis">${esc(s.title)}</span>
+        </label>
+        <button class="iconbtn" data-subtask-delete="${g.id}:${s.id}" title="Delete subtask" style="padding:2px 6px;font-size:0.85rem">×</button>
       </div>
     `).join('');
-  }
 
-  function renderFasting(){
-    const fast = settings().fasting;
-    const display = $('fastDisplay');
-    const bar = $('fastBar');
-    const sub = $('fastSub');
-    const btn = $('btnFastToggle');
-
-    if (!fast.active || !fast.startTime) {
-      display.textContent = 'Not Fasting';
-      display.style.color = 'var(--muted)';
-      bar.style.width = '0%';
-      sub.textContent = 'Ready to begin your eating window fast.';
-      btn.textContent = 'Start Fast';
-      btn.className = 'btn small';
-      return;
-    }
-
-    const elapsedMs = Date.now() - fast.startTime;
-    const hours = Math.floor(elapsedMs / (1000 * 60 * 60));
-    const mins = Math.floor((elapsedMs % (1000 * 60 * 60)) / (1000 * 60));
-    const target = fast.targetHours || 16;
-    const pct = Math.min(100, Math.round((elapsedMs / (target * 60 * 60 * 1000)) * 100));
-
-    display.textContent = `${hours}h ${mins}m`;
-    display.style.color = hours >= target ? '#18765b' : '#8e24aa';
-    bar.style.width = pct + '%';
-    bar.style.background = hours >= target ? '#18765b' : '#8e24aa';
-    sub.textContent = `${pct}% of ${target}h goal completed · Started at ${new Date(fast.startTime).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
-    btn.textContent = 'End Fast';
-    btn.className = 'btn small secondary';
-  }
-
-  function render(){
-    const d = day();
-    const st = settings();
-
-    // Streak badge
-    $('streakBadge').textContent = `🔥 ${calculateStreak()} Day Streak`;
-
-    // Settings inputs
-    $('waterGoal').value = st.waterGoal || 2500;
-    $('calorieGoal').value = st.calorieGoal || 1800;
-    $('proteinGoal').value = st.proteinGoal || 85;
-    $('targetWeight').value = st.targetWeight || 75.0;
-
-    // Stat 1: Water
-    const water = totalWater(d);
-    const wGoal = Math.max(1, Number(st.waterGoal) || 2500);
-    const wPct = Math.min(100, Math.round(water / wGoal * 100));
-    $('statWater').textContent = (water / 1000).toFixed(2) + ' L';
-    $('waterCaption').textContent = `${wPct}% of ${wGoal} mL goal`;
-    $('waterTotal').textContent = water.toLocaleString() + ' mL';
-    $('waterPercent').textContent = wPct + '%';
-    $('waterBar').style.width = wPct + '%';
-    $('waterProgress').setAttribute('aria-valuenow', wPct);
-
-    // Stat 2: Calories & Deficit
-    const cTotal = Math.round(knownCalories(d));
-    const cGoal = Math.max(1, Number(st.calorieGoal) || 1800);
-    const cRemaining = cGoal - cTotal;
-    $('statCalories').textContent = cTotal.toLocaleString() + ' kcal';
-    $('calorieCaption').textContent = cRemaining >= 0 
-      ? `Deficit: ${cRemaining} kcal left` 
-      : `Surplus: +${Math.abs(cRemaining)} kcal over`;
-    $('foodCalTotal').textContent = cTotal.toLocaleString();
-    $('foodCalTarget').textContent = cGoal.toLocaleString();
-    const cPct = Math.min(100, Math.round(cTotal / cGoal * 100));
-    $('calorieBar').style.width = cPct + '%';
-    $('calorieBar').style.background = cTotal > cGoal ? '#a83b32' : '#2e7d32';
-    $('calDeficitText').textContent = cRemaining >= 0 
-      ? `-${cRemaining} kcal remaining` 
-      : `+${Math.abs(cRemaining)} kcal over goal`;
-    $('calDeficitText').style.color = cRemaining >= 0 ? '#18765b' : '#a83b32';
-
-    // Stat 3: Exercise
-    const actMins = totalWorkoutMins(d);
-    const actBurned = totalWorkoutBurned(d);
-    $('statExercise').textContent = actMins + ' min';
-    $('exerciseCaption').textContent = `${(d.steps || 0).toLocaleString()} steps · ~${actBurned} kcal burned`;
-    $('totalWorkoutMins').textContent = actMins;
-    $('totalWorkoutBurned').textContent = actBurned;
-
-    // Stat 4: Weight
-    const latestW = (d.weights && d.weights.length) ? d.weights[d.weights.length - 1] : null;
-    $('statWeight').textContent = latestW ? latestW.kg + ' kg' : '—';
-    $('weightCaption').textContent = `Goal: ${(st.targetWeight || 75.0)} kg`;
-
-    // Protein inside nutrition
-    const pTotal = Math.round(totalProtein(d) * 10) / 10;
-    const pGoal = Math.max(1, Number(st.proteinGoal) || 85);
-    const pPct = Math.min(100, Math.round(pTotal / pGoal * 100));
-    $('foodProtTotal').textContent = pTotal;
-    $('foodProtTarget').textContent = pGoal;
-    $('proteinBar').style.width = pPct + '%';
-    $('proteinPctText').textContent = `${pPct}% target met`;
-
-    // Water entries
-    $('waterEntries').innerHTML = d.water.length
-      ? d.water.slice().reverse().map(x => `<div class="item"><div><span class="item-title">+${x.ml} mL</span><small>${esc(x.time)}</small></div><button class="remove" data-remove-water="${x.id}" aria-label="Remove water entry">×</button></div>`).join('')
-      : '<div class="empty">No water entries logged today yet.</div>';
-
-    // Workouts entries
-    $('workoutEntries').innerHTML = (d.workouts || []).length
-      ? d.workouts.slice().reverse().map(w => {
-          const intensityBadge = w.intensity === 'High' ? '<span class="badge high">High Intensity</span>' : (w.intensity === 'Low' ? '<span class="badge low">Light</span>' : '<span class="badge mod">Moderate</span>');
-          const burnStr = w.burned ? ` · ~${w.burned} kcal burned` : '';
-          return `<div class="item">
-            <div>
-              <span class="item-title">${esc(w.name)}</span>
-              <small>${esc(w.type)} · ${w.duration} mins${burnStr} (${esc(w.time)})</small>
-              <div class="item-badges">
-                <span class="badge workout">${esc(w.type)}</span>
-                ${intensityBadge}
-              </div>
-            </div>
-            <button class="remove" data-remove-workout="${w.id}" aria-label="Remove workout entry">×</button>
-          </div>`;
-        }).join('')
-      : '<div class="empty">No workouts logged yet today. Fill the form above after your session!</div>';
-
-    // Food entries
-    $('foodEntries').innerHTML = d.foods.length
-      ? d.foods.slice().reverse().map(x => {
-          const pStr = Number.isFinite(x.protein) ? ` · ${x.protein}g protein` : '';
-          const cStr = Number.isFinite(x.calories) ? `${x.calories} kcal` : 'calories unestimated';
-          return `<div class="item">
-            <div>
-              <span class="item-title">${esc(x.name)}</span>
-              <small>${esc(x.meal)} · ${cStr}${pStr}</small>
-            </div>
-            <button class="remove" data-remove-food="${x.id}" aria-label="Remove food entry">×</button>
-          </div>`;
-        }).join('')
-      : '<div class="empty">No meals logged for this date.</div>';
-
-    // Weight entries
-    $('weightHistory').innerHTML = d.weights.length
-      ? d.weights.slice().reverse().map(x => `<div class="item"><div><span class="item-title">${x.kg} kg</span><small>${esc(x.time)}</small></div><button class="remove" data-remove-weight="${x.id}" aria-label="Remove weight entry">×</button></div>`).join('')
-      : '<div class="empty">No weight check-in for this date.</div>';
-
-    // Vitals & Habits
-    $('bpInput').value = d.vitals?.bp || '';
-    $('pulseInput').value = d.vitals?.pulse || '';
-    $('energySelect').value = d.vitals?.energy || 'Good';
-    $('stepsInput').value = d.steps || 0;
-    $('sleepInput').value = d.sleep || '';
-
-    $('habitChecks').querySelectorAll('input').forEach(chk => {
-      chk.checked = (d.habits || []).includes(chk.value);
-    });
-
-    // Notes
-    $('notes').value = d.notes || '';
-
-    // Render components
-    renderFavorites();
-    renderFasting();
-
-    // Weekly consistency score
-    const sc = calculateWeeklyScore();
-    $('weeklyScoreVal').textContent = sc.totalScore;
-    $('weeklyScoreGrade').textContent = sc.grade;
-    $('scoreWaterDays').textContent = `${sc.waterDays} / 7 Days`;
-    $('scoreWorkoutDays').textContent = `${sc.workoutDays} / 5 Target Days`;
-    $('scoreFoodDays').textContent = `${sc.foodDays} / 7 Days`;
-    $('scoreSleepDays').textContent = `${sc.sleepDays} / 7 Days`;
-
-    renderCharts();
-    makeReport();
-  }
-
-  // --- Visual Progress Charts ---
-  function setupCanvas(canvas){
-    const rect = canvas.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    const w = rect.width || 440;
-    const h = rect.height || 180;
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
-    const ctx = canvas.getContext('2d');
-    ctx.resetTransform?.();
-    ctx.scale(dpr, dpr);
-    return { ctx, width: w, height: h };
-  }
-
-  function renderCharts(){
-    renderWeightChart();
-    renderSecondChart();
-  }
-
-  function renderWeightChart(){
-    const canvas = $('weightCanvas');
-    if (!canvas) return;
-    const { ctx, width, height } = setupCanvas(canvas);
-    ctx.clearRect(0, 0, width, height);
-
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const textColor = isDark ? '#e5eee9' : '#172522';
-    const mutedColor = isDark ? '#889e96' : '#64736e';
-    const gridColor = isDark ? '#1e3830' : '#e0e8e3';
-
-    const allDates = Object.keys(db).filter(k => !k.startsWith('_')).sort();
-    const weightPoints = [];
-    allDates.forEach(k => {
-      const wList = db[k]?.weights || [];
-      if (wList.length > 0) {
-        weightPoints.push({ date: k, kg: wList[wList.length - 1].kg });
-      }
-    });
-
-    const targetKg = Number(settings().targetWeight) || 75.0;
-
-    if (weightPoints.length === 0) {
-      ctx.fillStyle = mutedColor;
-      ctx.font = '13px system-ui';
-      ctx.textAlign = 'center';
-      ctx.fillText('Log weight across multiple days to view trajectory.', width / 2, height / 2);
-      $('chartWeightDiff').textContent = '';
-      return;
-    }
-
-    const points = weightPoints.slice(-14);
-    const firstKg = points[0].kg;
-    const lastKg = points[points.length - 1].kg;
-    const diff = Math.round((lastKg - firstKg) * 10) / 10;
-    $('chartWeightDiff').textContent = points.length > 1 
-      ? `${diff > 0 ? '+' : ''}${diff} kg (${points.length} entries)` 
-      : `${lastKg} kg recorded`;
-
-    const padding = { top: 25, bottom: 28, left: 42, right: 20 };
-    const chartW = width - padding.left - padding.right;
-    const chartH = height - padding.top - padding.bottom;
-
-    const allKgs = points.map(p => p.kg).concat([targetKg]);
-    const minKg = Math.floor(Math.min(...allKgs) - 1);
-    const maxKg = Math.ceil(Math.max(...allKgs) + 1);
-
-    const getY = kg => padding.top + chartH - ((kg - minKg) / (maxKg - minKg || 1)) * chartH;
-    const getX = i => padding.left + (points.length === 1 ? chartW / 2 : (i / (points.length - 1)) * chartW);
-
-    ctx.strokeStyle = gridColor;
-    ctx.lineWidth = 1;
-    [minKg, (minKg + maxKg) / 2, maxKg].forEach(val => {
-      const y = getY(val);
-      ctx.beginPath();
-      ctx.moveTo(padding.left, y);
-      ctx.lineTo(width - padding.right, y);
-      ctx.stroke();
-
-      ctx.fillStyle = mutedColor;
-      ctx.font = '11px system-ui';
-      ctx.textAlign = 'right';
-      ctx.fillText(val.toFixed(1), padding.left - 6, y + 3);
-    });
-
-    const targetY = getY(targetKg);
-    ctx.strokeStyle = '#18765b';
-    ctx.setLineDash([4, 4]);
-    ctx.beginPath();
-    ctx.moveTo(padding.left, targetY);
-    ctx.lineTo(width - padding.right, targetY);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = '#18765b';
-    ctx.font = '10px system-ui';
-    ctx.textAlign = 'right';
-    ctx.fillText(`Target: ${targetKg}kg`, width - padding.right, targetY - 4);
-
-    if (points.length > 1) {
-      ctx.strokeStyle = '#23916d';
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      points.forEach((p, i) => {
-        const x = getX(i);
-        const y = getY(p.kg);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.stroke();
-    }
-
-    points.forEach((p, i) => {
-      const x = getX(i);
-      const y = getY(p.kg);
-      ctx.fillStyle = textColor;
-      ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI * 2);
-      ctx.fill();
-
-      if (i === points.length - 1 || points.length <= 5) {
-        ctx.fillStyle = textColor;
-        ctx.font = 'bold 10px system-ui';
-        ctx.textAlign = 'center';
-        ctx.fillText(p.kg, x, y - 8);
-      }
-
-      if (points.length <= 7 || i === 0 || i === points.length - 1 || i % 2 === 0) {
-        const parts = p.date.split('-');
-        const dateStr = parts.length === 3 ? `${parts[1]}/${parts[2]}` : p.date;
-        ctx.fillStyle = mutedColor;
-        ctx.font = '10px system-ui';
-        ctx.textAlign = 'center';
-        ctx.fillText(dateStr, x, height - 8);
-      }
-    });
-  }
-
-  function renderSecondChart(){
-    const canvas = $('waterCanvas');
-    if (!canvas) return;
-    const { ctx, width, height } = setupCanvas(canvas);
-    ctx.clearRect(0, 0, width, height);
-
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const textColor = isDark ? '#e5eee9' : '#172522';
-    const mutedColor = isDark ? '#889e96' : '#64736e';
-    const emptyBarColor = isDark ? '#1e3830' : '#e0e8e3';
-
-    const daysArr = [];
-    const baseDate = new Date(currentDate + 'T00:00:00');
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date(baseDate);
-      d.setDate(d.getDate() - i);
-      const k = d.toLocaleDateString('en-CA');
-      const entry = db[k] || { water: [], workouts: [], exercise: 0 };
-      const val = chartMode === 'water' ? totalWater(entry) : totalWorkoutMins(entry);
-      const dayName = i === 0 ? 'Today' : d.toLocaleDateString('en-US', { weekday: 'short' });
-      daysArr.push({ key: k, val, label: dayName });
-    }
-
-    const padding = { top: 25, bottom: 25, left: 38, right: 15 };
-    const chartW = width - padding.left - padding.right;
-    const chartH = height - padding.top - padding.bottom;
-
-    if (chartMode === 'water') {
-      $('chartSecondTitle').textContent = '💧 7-Day Hydration Consistency';
-      const goal = Number(settings().waterGoal) || 2500;
-      const avgMl = Math.round(daysArr.reduce((s, x) => s + x.val, 0) / 7);
-      $('chartSecondAvg').textContent = `7-Day Avg: ${(avgMl / 1000).toFixed(2)} L/day`;
-
-      const maxVal = Math.max(goal * 1.2, ...daysArr.map(d => d.val), 3000);
-      const getY = ml => padding.top + chartH - (ml / maxVal) * chartH;
-
-      const goalY = getY(goal);
-      ctx.strokeStyle = '#18765b';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([4, 4]);
-      ctx.beginPath();
-      ctx.moveTo(padding.left, goalY);
-      ctx.lineTo(width - padding.right, goalY);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle = '#18765b';
-      ctx.font = '10px system-ui';
-      ctx.textAlign = 'right';
-      ctx.fillText(`Target: ${(goal / 1000).toFixed(1)}L`, width - padding.right, goalY - 4);
-
-      const barW = Math.min(32, (chartW / 7) * 0.65);
-      const stepX = chartW / 7;
-
-      daysArr.forEach((item, i) => {
-        const x = padding.left + i * stepX + (stepX - barW) / 2;
-        const barH = (item.val / maxVal) * chartH;
-        const y = padding.top + chartH - barH;
-        ctx.fillStyle = item.val >= goal ? '#18765b' : (item.val > 0 ? '#e29e24' : emptyBarColor);
-        if (barH > 0) {
-          ctx.beginPath();
-          ctx.roundRect ? ctx.roundRect(x, y, barW, barH, [4, 4, 0, 0]) : ctx.rect(x, y, barW, barH);
-          ctx.fill();
-        }
-        if (item.val > 0) {
-          ctx.fillStyle = textColor;
-          ctx.font = '10px system-ui';
-          ctx.textAlign = 'center';
-          ctx.fillText((item.val / 1000).toFixed(1) + 'L', x + barW / 2, Math.max(padding.top + 10, y - 4));
-        }
-        ctx.fillStyle = item.key === currentDate ? '#18765b' : mutedColor;
-        ctx.font = item.key === currentDate ? 'bold 11px system-ui' : '10px system-ui';
-        ctx.textAlign = 'center';
-        ctx.fillText(item.label, x + barW / 2, height - 7);
-      });
-    } else {
-      // Activity / Workout chart
-      $('chartSecondTitle').textContent = '🏃 7-Day Workout & Movement (Mins)';
-      const avgMins = Math.round(daysArr.reduce((s, x) => s + x.val, 0) / 7);
-      $('chartSecondAvg').textContent = `7-Day Avg: ${avgMins} min/day`;
-
-      const maxVal = Math.max(60, ...daysArr.map(d => d.val), 90);
-      const getY = m => padding.top + chartH - (m / maxVal) * chartH;
-
-      // 45 min target line
-      const goalY = getY(45);
-      ctx.strokeStyle = '#0277bd';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([4, 4]);
-      ctx.beginPath();
-      ctx.moveTo(padding.left, goalY);
-      ctx.lineTo(width - padding.right, goalY);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle = '#0277bd';
-      ctx.font = '10px system-ui';
-      ctx.textAlign = 'right';
-      ctx.fillText(`Target: 45m`, width - padding.right, goalY - 4);
-
-      const barW = Math.min(32, (chartW / 7) * 0.65);
-      const stepX = chartW / 7;
-
-      daysArr.forEach((item, i) => {
-        const x = padding.left + i * stepX + (stepX - barW) / 2;
-        const barH = (item.val / maxVal) * chartH;
-        const y = padding.top + chartH - barH;
-        ctx.fillStyle = item.val >= 45 ? '#0277bd' : (item.val > 0 ? '#26a69a' : emptyBarColor);
-        if (barH > 0) {
-          ctx.beginPath();
-          ctx.roundRect ? ctx.roundRect(x, y, barW, barH, [4, 4, 0, 0]) : ctx.rect(x, y, barW, barH);
-          ctx.fill();
-        }
-        if (item.val > 0) {
-          ctx.fillStyle = textColor;
-          ctx.font = '10px system-ui';
-          ctx.textAlign = 'center';
-          ctx.fillText(item.val + 'm', x + barW / 2, Math.max(padding.top + 10, y - 4));
-        }
-        ctx.fillStyle = item.key === currentDate ? '#0277bd' : mutedColor;
-        ctx.font = item.key === currentDate ? 'bold 11px system-ui' : '10px system-ui';
-        ctx.textAlign = 'center';
-        ctx.fillText(item.label, x + barW / 2, height - 7);
-      });
-    }
-  }
-
-  function makeReport(){
-    const d = day();
-    const st = settings();
-    const foods = d.foods.map(f => {
-      const c = Number.isFinite(f.calories) ? f.calories + ' kcal' : 'unestimated';
-      const p = Number.isFinite(f.protein) ? `, ${f.protein}g protein` : '';
-      return `- ${f.name} (${f.meal}): ${c}${p}`;
-    }).join('\n') || '- No food logged';
-
-    const workouts = (d.workouts || []).map(w => {
-      const b = w.burned ? `, ~${w.burned} kcal burned` : '';
-      return `- ${w.name} [${w.type}]: ${w.duration} mins${b} (${w.intensity} intensity)`;
-    }).join('\n') || '- No workout logged';
-
-    const weights = d.weights.map(w => `${w.kg} kg at ${w.time}`).join(', ') || 'Not logged';
-    const cTotal = Math.round(knownCalories(d));
-    const pTotal = Math.round(totalProtein(d) * 10) / 10;
-    const cGoal = st.calorieGoal || 1800;
-    const pGoal = st.proteinGoal || 85;
-    const water = totalWater(d);
-    const sc = calculateWeeklyScore();
-
-    const report = `DAILY HEALTH & FITNESS SUMMARY — ${currentDate}
---------------------------------------------------
-WEEKLY COMPLIANCE SCORE: ${sc.totalScore}/100 (${sc.grade})
-- Water Target Hit: ${sc.waterDays} / 7 days
-- Workout Days: ${sc.workoutDays} / 5 target days
-- Meals Logged: ${sc.foodDays} / 7 days
-- 7h+ Sleep Rest: ${sc.sleepDays} / 7 days
-
-WEIGHT: ${weights} (Goal: ${st.targetWeight || 75.0} kg)
-HYDRATION: ${water} mL (Target: ${st.waterGoal || 2500} mL)
-
-EXERCISE & WORKOUTS:
-- Total Active Time: ${totalWorkoutMins(d)} minutes
-- Total Calories Burned: ~${totalWorkoutBurned(d)} kcal
-- Steps: ${(d.steps || 0).toLocaleString()}
-${workouts}
-
-NUTRITION & MACROS:
-- Calories: ${cTotal} / ${cGoal} kcal (Deficit: ${cGoal - cTotal} kcal)
-- Protein: ${pTotal} / ${pGoal} g
-${foods}
-
-VITALS & WELLNESS:
-- Blood Pressure: ${d.vitals?.bp || 'Not measured'}
-- Resting Pulse: ${d.vitals?.pulse ? d.vitals.pulse + ' bpm' : 'Not measured'}
-- Energy & Mood: ${d.vitals?.energy || 'Good'}
-- Sleep: ${d.sleep ? d.sleep + ' hours' : 'Not logged'}
-- Habits Achieved: ${(d.habits || []).join(', ') || 'None logged'}
-
-NOTES:
-${d.notes || 'None'}`;
-
-    $('report').value = report;
-  }
-
-  function addWater(ml){
-    if(!Number.isFinite(ml) || ml <= 0) return;
-    day().water.push({
-      id: Date.now() + Math.random(),
-      ml: Math.round(ml),
-      time: new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })
-    });
-    saveDb();
-    toast('Water logged');
-  }
-
-  function shiftDate(deltaDays){
-    const parts = currentDate.split('-');
-    const dt = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-    dt.setDate(dt.getDate() + deltaDays);
-    currentDate = dt.toLocaleDateString('en-CA');
-    $('logDate').value = currentDate;
-    render();
-  }
-
-  function download(name, content, type){
-    const blob = new Blob([content], { type });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = name;
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
-
-  // --- Event Listeners ---
-  $('themeToggle').addEventListener('click', toggleTheme);
-
-  $('btnChartModeWater').addEventListener('click', () => {
-    chartMode = 'water';
-    renderSecondChart();
-  });
-  $('btnChartModeActivity').addEventListener('click', () => {
-    chartMode = 'activity';
-    renderSecondChart();
-  });
-
-  $('logDate').value = currentDate;
-  $('logDate').addEventListener('change', e => {
-    currentDate = e.target.value || today();
-    e.target.value = currentDate;
-    render();
-  });
-
-  // Date Navigation buttons
-  $('btnPrevDate').addEventListener('click', () => shiftDate(-1));
-  $('btnNextDate').addEventListener('click', () => shiftDate(1));
-  $('btnToday').addEventListener('click', () => {
-    currentDate = today();
-    $('logDate').value = currentDate;
-    render();
-  });
-
-  // Quick water buttons
-  document.querySelectorAll('[data-water]').forEach(b => {
-    b.addEventListener('click', () => addWater(Number(b.dataset.water)));
-  });
-
-  $('addCustomWater').addEventListener('click', () => {
-    const v = Number($('customWater').value);
-    if(v > 0 && v <= 3000){
-      addWater(v);
-      $('customWater').value = '';
-    } else {
-      toast('Enter an amount from 1 to 3000 mL');
-    }
-  });
-
-  // Workout Form submit
-  $('workoutForm').addEventListener('submit', e => {
-    e.preventDefault();
-    const type = $('workoutType').value;
-    const name = $('workoutName').value.trim();
-    const duration = Math.max(1, Number($('workoutDuration').value) || 0);
-    const rawBurned = $('workoutBurned').value;
-    const burned = rawBurned === '' ? 0 : Math.max(0, Number(rawBurned));
-    const intensity = $('workoutIntensity').value;
-
-    day().workouts.push({
-      id: Date.now() + Math.random(),
-      type,
-      name,
-      duration,
-      burned,
-      intensity,
-      time: new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })
-    });
-
-    $('workoutName').value = '';
-    $('workoutDuration').value = '';
-    $('workoutBurned').value = '';
-
-    saveDb();
-    toast('Workout logged! 💪');
-  });
-
-  // Food Form submit
-  $('foodForm').addEventListener('submit', e => {
-    e.preventDefault();
-    const name = $('foodName').value.trim();
-    if(!name) return;
-
-    const rawCal = $('foodCalories').value;
-    const rawProt = $('foodProtein').value;
-
-    day().foods.push({
-      id: Date.now() + Math.random(),
-      name,
-      calories: rawCal === '' ? null : Math.max(0, Number(rawCal)),
-      protein: rawProt === '' ? null : Math.max(0, Number(rawProt)),
-      meal: $('foodMeal').value
-    });
-
-    $('foodName').value = '';
-    $('foodCalories').value = '';
-    $('foodProtein').value = '';
-
-    saveDb();
-    toast('Food logged');
-  });
-
-  // Save current food as a Favorite
-  $('btnSaveFavorite').addEventListener('click', () => {
-    const name = $('foodName').value.trim();
-    if(!name){
-      toast('Enter a food name first');
-      return;
-    }
-    const cal = Number($('foodCalories').value) || 0;
-    const prot = Number($('foodProtein').value) || 0;
-    const meal = $('foodMeal').value;
-
-    const favs = settings().favorites;
-    favs.push({ name, calories: cal, protein: prot, meal });
-    saveDb();
-    toast('Added to Quick Favorites! ⭐');
-  });
-
-  // Quick favorite chips clicking / deleting
-  $('favChips').addEventListener('click', e => {
-    const delBtn = e.target.closest('[data-del-fav]');
-    if (delBtn) {
-      e.stopPropagation();
-      const idx = Number(delBtn.dataset.delFav);
-      settings().favorites.splice(idx, 1);
-      saveDb();
-      toast('Favorite removed');
-      return;
-    }
-
-    const chip = e.target.closest('[data-fav-idx]');
-    if (chip) {
-      const idx = Number(chip.dataset.favIdx);
-      const item = settings().favorites[idx];
-      if (item) {
-        day().foods.push({
-          id: Date.now() + Math.random(),
-          name: item.name,
-          calories: item.calories,
-          protein: item.protein,
-          meal: item.meal || 'Lunch'
-        });
-        saveDb();
-        toast(`Added ${item.name}! 🥗`);
-      }
-    }
-  });
-
-  // TDEE Calculator Toggle & Calculations
-  $('toggleTdeeBtn').addEventListener('click', () => {
-    const sec = $('tdeeSection');
-    sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
-  });
-
-  let calculatedTargets = null;
-  $('btnCalculateTdee').addEventListener('click', () => {
-    const gender = $('calcGender').value;
-    const age = Number($('calcAge').value) || 28;
-    const ht = Number($('calcHeight').value) || 172;
-    const wt = Number($('calcWeight').value) || 80;
-    const act = Number($('calcActivity').value) || 1.4;
-
-    let bmr = (10 * wt) + (6.25 * ht) - (5 * age);
-    bmr += (gender === 'male' ? 5 : -161);
-    const tdee = Math.round(bmr * act);
-    const fatLossCal = Math.round(tdee - 500);
-    const protG = Math.round(wt * 1.6);
-
-    calculatedTargets = { cal: fatLossCal, prot: protG };
-
-    $('tdeeResultText').innerHTML = `
-      <strong>Results:</strong><br>
-      • Maintenance Calories (TDEE): <strong>${tdee} kcal</strong><br>
-      • Recommended Fitness Target (Deficit): <strong>${fatLossCal} kcal</strong><br>
-      • Target Protein: <strong>${protG} g</strong> (1.6g/kg)
+    return `
+      <div class="goal-card">
+        <div class="goal-top">
+          <div>
+            <h4>${esc(g.title)}</h4>
+            <span class="pill purple">${esc(g.area)}</span>
+          </div>
+          <span class="pill ${g.progress === 100 ? 'green' : ''}">${g.progress}%</span>
+        </div>
+        <p style="margin-top:9px">${esc(g.why || 'No description added.')}</p>
+        ${g.target ? `<p class="small muted">🎯 Target: ${esc(g.target)}</p>` : ''}
+        <div class="progress"><div style="width:${g.progress}%"></div></div>
+
+        <!-- Subtasks Section -->
+        <div class="subtask-list">
+          <strong style="font-size:0.8rem; color:var(--muted)">SUB-MILESTONES (${doneSub}/${subtasks.length}):</strong>
+          ${subHtml || '<span class="small muted">No sub-milestones yet.</span>'}
+        </div>
+
+        <div class="row between" style="margin-top:12px; padding-top:10px; border-top:1px solid var(--line)">
+          <button class="btn secondary sm" data-add-subtask="${g.id}">+ Add Sub-milestone</button>
+          <button class="iconbtn" data-goal-delete="${g.id}" title="Delete goal">×</button>
+        </div>
+      </div>
     `;
-    $('tdeeResult').style.display = 'block';
-  });
+  }).join('') || '<div class="empty">No goals found.</div>';
+}
 
-  $('btnApplyTdee').addEventListener('click', () => {
-    if (calculatedTargets) {
-      settings().calorieGoal = calculatedTargets.cal;
-      settings().proteinGoal = calculatedTargets.prot;
-      saveDb();
-      $('tdeeSection').style.display = 'none';
-      toast('Targets updated!');
-    }
-  });
-
-  // Intermittent Fasting Toggle
-  $('btnFastToggle').addEventListener('click', () => {
-    const fast = settings().fasting;
-    if (fast.active) {
-      fast.active = false;
-      fast.endTime = Date.now();
-      toast('Fast ended! Great job.');
-    } else {
-      fast.active = true;
-      fast.startTime = Date.now();
-      toast('Fast started! Stay hydrated.');
-    }
-    saveDb();
-  });
-
-  // Update Fasting timer live
-  setInterval(() => {
-    if (settings().fasting.active) renderFasting();
-  }, 30000);
-
-  // Vitals & Habits Save
-  $('saveVitals').addEventListener('click', () => {
-    const d = day();
-    d.vitals = {
-      bp: $('bpInput').value.trim(),
-      pulse: $('pulseInput').value.trim(),
-      energy: $('energySelect').value
-    };
-    d.steps = Math.max(0, Number($('stepsInput').value) || 0);
-    d.sleep = $('sleepInput').value;
-    d.habits = [...$('habitChecks').querySelectorAll('input:checked')].map(x => x.value);
-    saveDb();
-    toast('Vitals & Habits saved! 🩺');
-  });
-
-  // Weight check-in
-  $('saveWeight').addEventListener('click', () => {
-    const n = Number($('weightInput').value);
-    if(n < 25 || n > 350 || !Number.isFinite(n)){
-      toast('Enter a valid weight in kg (e.g. 84.5)');
-      return;
-    }
-    day().weights.push({
-      id: Date.now() + Math.random(),
-      kg: Math.round(n * 10) / 10,
-      time: new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })
-    });
-    $('weightInput').value = '';
-    saveDb();
-    toast('Weight check-in saved');
-  });
-
-  // Settings inputs changes
-  $('waterGoal').addEventListener('change', () => {
-    const n = Number($('waterGoal').value);
-    settings().waterGoal = (n >= 250 && n <= 6000) ? n : 2500;
-    saveDb();
-    toast('Water goal updated');
-  });
-
-  $('calorieGoal').addEventListener('change', () => {
-    const n = Number($('calorieGoal').value);
-    settings().calorieGoal = (n >= 500 && n <= 6000) ? n : 1800;
-    saveDb();
-    toast('Calorie target updated');
-  });
-
-  $('proteinGoal').addEventListener('change', () => {
-    const n = Number($('proteinGoal').value);
-    settings().proteinGoal = (n >= 10 && n <= 400) ? n : 85;
-    saveDb();
-    toast('Protein target updated');
-  });
-
-  $('targetWeight').addEventListener('change', () => {
-    const n = Number($('targetWeight').value);
-    settings().targetWeight = (n >= 25 && n <= 350) ? Math.round(n * 10) / 10 : 75.0;
-    saveDb();
-    toast('Goal weight updated');
-  });
-
-  $('undoWater').addEventListener('click', () => {
-    const d = day();
-    if(d.water && d.water.length){
-      d.water.pop();
-      saveDb();
-      toast('Latest water entry removed');
-    }
-  });
-
-  // Notes save
-  $('saveNotes').addEventListener('click', () => {
-    const d = day();
-    d.notes = $('notes').value.trim();
-    saveDb();
-    toast('Notes saved');
-  });
-
-  // Item Removals
-  document.addEventListener('click', e => {
-    const w = e.target.closest('[data-remove-water]');
-    const f = e.target.closest('[data-remove-food]');
-    const wt = e.target.closest('[data-remove-weight]');
-    const wo = e.target.closest('[data-remove-workout]');
-    if(w){
-      day().water = day().water.filter(x => String(x.id) !== w.dataset.removeWater);
-      saveDb();
-    }
-    if(f){
-      day().foods = day().foods.filter(x => String(x.id) !== f.dataset.removeFood);
-      saveDb();
-    }
-    if(wt){
-      day().weights = day().weights.filter(x => String(x.id) !== wt.dataset.removeWeight);
-      saveDb();
-    }
-    if(wo){
-      day().workouts = (day().workouts || []).filter(x => String(x.id) !== wo.dataset.removeWorkout);
-      saveDb();
-    }
-  });
-
-  // Summary & Print
-  $('refreshReport').addEventListener('click', () => {
-    makeReport();
-    toast('Summary refreshed');
-  });
-
-  $('copyReport').addEventListener('click', async () => {
-    makeReport();
-    try {
-      await navigator.clipboard.writeText($('report').value);
-      toast('Summary copied to clipboard');
-    } catch {
-      $('report').focus();
-      $('report').select();
-      toast('Select and copy the summary');
-    }
-  });
-
-  $('printReport').addEventListener('click', () => {
-    makeReport();
-    window.print();
-  });
-
-  // Export JSON
-  $('exportJson').addEventListener('click', () => {
-    download(
-      'health-fitness-backup-' + currentDate + '.json',
-      JSON.stringify({ version: 4, exportedAt: new Date().toISOString(), data: db }, null, 2),
-      'application/json'
-    );
-  });
-
-  // Import JSON Backup
-  $('btnImportJson').addEventListener('click', () => {
-    $('importFileInput').click();
-  });
-
-  $('importFileInput').addEventListener('change', e => {
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = event => {
-      try {
-        const parsed = JSON.parse(event.target.result);
-        const importedData = parsed.data || parsed.days || parsed;
-        if(typeof importedData === 'object' && importedData !== null){
-          db = Object.assign({}, db, importedData);
-          if(!db._settings) db._settings = defaultSettings();
-          saveDb();
-          toast('Backup restored successfully!');
-        } else {
-          toast('Invalid backup file structure.');
+// SUBTASK CHECK
+document.addEventListener('change', e => {
+  if (e.target.matches('[data-subtask-check]')) {
+    const [goalId, subId] = e.target.dataset.subtaskCheck.split(':');
+    const goal = state.goals.find(g => String(g.id) === goalId);
+    if (goal) {
+      const sub = (goal.subtasks || []).find(s => String(s.id) === subId);
+      if (sub) {
+        sub.done = e.target.checked;
+        if (sub.done) {
+          playSound('done');
+          const allDone = goal.subtasks.every(s => s.done);
+          if (allDone) launchConfetti();
         }
-      } catch(err) {
-        toast('Error reading JSON backup file.');
+        save();
       }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
-  });
-
-  // Export Full History CSV
-  $('exportFullCsv').addEventListener('click', () => {
-    const rows = [
-      ['Date', 'RecordType', 'CategoryOrMeal', 'ItemOrRoutine', 'DurationOrAmount', 'CaloriesOrBurned', 'ExtraDetails']
-    ];
-
-    const sortedDates = Object.keys(db).filter(k => !k.startsWith('_')).sort();
-
-    sortedDates.forEach(dt => {
-      const d = db[dt];
-      (d.water || []).forEach(x => {
-        rows.push([dt, 'Water', 'Hydration', 'Water', x.ml + ' mL', '', x.time]);
-      });
-      (d.workouts || []).forEach(w => {
-        rows.push([dt, 'Workout', w.type, w.name, w.duration + ' mins', (w.burned || 0) + ' kcal', w.intensity]);
-      });
-      (d.foods || []).forEach(x => {
-        rows.push([dt, 'Food', x.meal, x.name, (x.protein ?? '') + ' g protein', (x.calories ?? '') + ' kcal', '']);
-      });
-      (d.weights || []).forEach(x => {
-        rows.push([dt, 'Weight', 'WeighIn', 'Weight', x.kg + ' kg', '', x.time]);
-      });
-      if (d.steps > 0 || d.vitals?.bp || d.sleep || d.notes) {
-        rows.push([
-          dt, 'VitalsSummary', 'DailyCheck', 
-          'Steps: ' + (d.steps || 0), 
-          'Sleep: ' + (d.sleep || 'N/A') + ' hrs', 
-          'BP: ' + (d.vitals?.bp || 'N/A'), 
-          `Pulse: ${d.vitals?.pulse || 'N/A'}; Energy: ${d.vitals?.energy || ''}; Notes: ${d.notes || ''}`
-        ]);
-      }
-    });
-
-    const csv = rows.map(r => r.map(v => '"' + String(v ?? '').replace(/"/g, '""') + '"').join(',')).join('\r\n');
-    download('health-and-fitness-complete-history.csv', csv, 'text/csv;charset=utf-8;');
-    toast('Complete History CSV exported!');
-  });
-
-  // Clear Day
-  $('clearDay').addEventListener('click', () => {
-    if(confirm('Clear all entries for ' + currentDate + '? Export a backup first if needed.')){
-      db[currentDate] = blank();
-      saveDb();
-      toast('Day cleared');
     }
-  });
+  }
+});
 
-  // Resize listener for sharp canvas charts
-  window.addEventListener('resize', () => {
-    renderCharts();
-  });
+// ADD SUBTASK BUTTON
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-add-subtask]');
+  if (btn) {
+    const goalId = btn.dataset.addSubtask;
+    const goal = state.goals.find(g => String(g.id) === goalId);
+    if (goal) {
+      openModal({
+        title: `Add Sub-milestone to: ${esc(goal.title)}`,
+        bodyHtml: `
+          <div class="field">
+            <label>Sub-milestone Title</label>
+            <input id="newSubtaskTitle" required placeholder="e.g. Write spatial hash collision grid">
+          </div>
+        `,
+        confirmText: 'Add Sub-task',
+        onConfirm: () => {
+          const t = $('newSubtaskTitle').value.trim();
+          if (t) {
+            if (!goal.subtasks) goal.subtasks = [];
+            goal.subtasks.push({ id: uid(), title: t, done: false });
+            save();
+            toast('Sub-milestone added');
+          }
+        }
+      });
+    }
+  }
+});
 
-  // Register PWA Service Worker
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(() => {});
+// CLOUD & ACCOUNT SETTINGS
+$('saveAccountSettingsBtn').addEventListener('click', () => {
+  state.settings.name = $('nameInput').value.trim() || 'Rohan';
+  state.settings.email = $('accountEmailInput').value.trim();
+  state.settings.pin = $('pinLockInput').value.trim();
+  state.settings.workHours = $('workHours').value.trim();
+  state.settings.supabaseUrl = $('supabaseUrlInput').value.trim();
+  state.settings.supabaseKey = $('supabaseKeyInput').value.trim();
+
+  $('accountBadgeName').textContent = state.settings.name;
+  save();
+  toast('Account preferences saved');
+});
+
+const cleanSupabaseUrl = raw => raw.trim().replace(/\/rest\/v1\/?$/i, '').replace(/\/+$/, '');
+
+$('testCloudSyncBtn').addEventListener('click', async () => {
+  const url = cleanSupabaseUrl($('supabaseUrlInput').value);
+  const key = $('supabaseKeyInput').value.trim();
+  if (!url || !key) {
+    toast('Please enter Supabase URL and Key first');
+    return;
+  }
+  state.settings.supabaseUrl = url;
+  state.settings.supabaseKey = key;
+  save();
+
+  $('testCloudSyncBtn').textContent = 'Pushing...';
+  try {
+    const email = state.settings.email || 'demo@goalos.app';
+    const res = await fetch(`${url}/rest/v1/goalos_sync`, {
+      method: 'POST',
+      headers: {
+        'apikey': key,
+        'Authorization': `Bearer ${key}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({
+        user_id: email,
+        data: state,
+        updated_at: new Date().toISOString()
+      })
     });
+
+    if (res.ok || res.status === 201 || res.status === 204) {
+      toast('✅ Cloud Backup Successful! Data synced to Supabase.');
+      playSound('done');
+    } else {
+      // Table might not be created yet, test ping
+      const ping = await fetch(`${url}/rest/v1/`, { headers: { apikey: key } });
+      if (ping.ok || ping.status === 404 || ping.status === 200) {
+        toast('Connected! Please run SQL script to create table "goalos_sync".');
+        $('showSupabaseSqlLink').click();
+      } else {
+        toast('Connection failed. Please check your Supabase Project URL & Key.');
+      }
+    }
+  } catch(e) {
+    toast('Cloud sync network error');
+  } finally {
+    $('testCloudSyncBtn').textContent = '☁️ Push to Cloud (Sync)';
+  }
+});
+
+$('pullCloudSyncBtn').addEventListener('click', async () => {
+  const url = cleanSupabaseUrl($('supabaseUrlInput').value);
+  const key = $('supabaseKeyInput').value.trim();
+  if (!url || !key) {
+    toast('Please enter Supabase URL and Key first');
+    return;
+  }
+  const email = state.settings.email || 'demo@goalos.app';
+  $('pullCloudSyncBtn').textContent = 'Restoring...';
+  try {
+    const res = await fetch(`${url}/rest/v1/goalos_sync?user_id=eq.${encodeURIComponent(email)}&select=*`, {
+      headers: {
+        'apikey': key,
+        'Authorization': `Bearer ${key}`
+      }
+    });
+    if (res.ok) {
+      const rows = await res.json();
+      if (rows && rows.length && rows[0].data) {
+        state = { ...clone(defaults), ...rows[0].data };
+        save();
+        toast('✅ Data restored from Supabase Cloud!');
+        playSound('done');
+        launchConfetti();
+      } else {
+        toast('No cloud backup found for ' + email);
+      }
+    } else {
+      toast('Could not find table "goalos_sync" in Supabase.');
+    }
+  } catch(e) {
+    toast('Error restoring from Supabase');
+  } finally {
+    $('pullCloudSyncBtn').textContent = '📥 Restore from Cloud';
+  }
+});
+
+$('showSupabaseSqlLink').addEventListener('click', () => {
+  openModal({
+    title: '⚡ 1-Minute Supabase Database Setup',
+    bodyHtml: `
+      <div style="font-size:0.87rem; line-height:1.55; color:var(--ink)">
+        <p>Follow these 3 quick steps on your free <strong>Supabase</strong> project:</p>
+        <ol style="padding-left:18px; margin:10px 0">
+          <li>Open your Supabase project (<a href="https://supabase.com/dashboard" target="_blank" rel="noopener" style="color:var(--accent); font-weight:700">supabase.com/dashboard ↗</a>).</li>
+          <li>Click <strong>SQL Editor</strong> on the left sidebar.</li>
+          <li>Paste and run this query (Click <strong>Run</strong>):</li>
+        </ol>
+        <pre style="background:var(--bg); padding:10px; border-radius:10px; font-size:0.78rem; overflow-x:auto; border:1px solid var(--line); color:var(--ink); user-select:all">
+create table if not exists goalos_sync (
+  user_id text primary key,
+  data jsonb not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now())
+);
+
+alter table goalos_sync enable row level security;
+create policy "Allow public sync" on goalos_sync for all using (true) with check (true);
+        </pre>
+        <p class="small muted" style="margin-top:8px">4. Copy your <strong>Project URL</strong> and <strong>anon public API key</strong> from <strong>Project Settings → API</strong> into the fields below.</p>
+      </div>
+    `,
+    confirmText: 'Got It'
+  });
+});
+
+// FLASHCARDS
+function renderFlashcards() {
+  const cards = state.flashcards || [];
+  $('fcDeckCount').textContent = `${cards.length} Cards`;
+  if (!cards.length) {
+    $('fcFrontCategory').textContent = 'Flashcard Deck';
+    $('fcFrontLvl').textContent = 'Deck Empty';
+    $('fcFrontQuestion').textContent = 'No flashcards in your deck yet. Add your first concept using the form!';
+    $('fcBackAnswer').innerHTML = '<span class="muted">Your template or explanation will appear here when flipped.</span>';
+    $('fcProgressCounter').textContent = '0 of 0';
+    $('flashcardDeckList').innerHTML = '<div class="empty">No flashcards saved yet. Add your first concept using the form!</div>';
+    $('activeFlashcard').classList.remove('flipped');
+    return;
   }
 
-  loadDb();
-  render();
+  if (currentFlashcardIndex >= cards.length || currentFlashcardIndex < 0) currentFlashcardIndex = 0;
+  const c = cards[currentFlashcardIndex];
+
+  $('fcFrontCategory').textContent = c.category;
+  $('fcFrontLvl').textContent = `Level: ${c.level || 1}`;
+  $('fcFrontQuestion').textContent = c.question;
+  $('fcBackAnswer').innerHTML = c.answer;
+  $('fcProgressCounter').textContent = `Card ${currentFlashcardIndex + 1} of ${cards.length}`;
+
+  $('activeFlashcard').classList.remove('flipped');
+
+  $('flashcardDeckList').innerHTML = cards.map((item, idx) => `
+    <div class="task">
+      <div class="task-main">
+        <div class="row between">
+          <div class="task-title">${esc(item.question)}</div>
+          <span class="pill ${item.category.includes('DSA') ? 'purple' : 'orange'}">${esc(item.category)}</span>
+        </div>
+        <div class="task-meta">
+          <span>Mastery: Level ${item.level || 1}</span>
+          <span>· <a href="javascript:void(0)" data-fc-jump="${idx}" style="color:var(--accent)">Practice This Card ↗</a></span>
+        </div>
+      </div>
+      <button class="iconbtn" data-fc-delete="${item.id}" title="Delete card">×</button>
+    </div>
+  `).join('');
+}
+
+$('activeFlashcard').addEventListener('click', () => {
+  $('activeFlashcard').classList.toggle('flipped');
+});
+
+$('fcNextCardBtn').addEventListener('click', () => {
+  if (!state.flashcards || !state.flashcards.length) return;
+  currentFlashcardIndex = (currentFlashcardIndex + 1) % state.flashcards.length;
+  renderFlashcards();
+});
+
+$('fcBtnHard').addEventListener('click', () => {
+  if (!state.flashcards || !state.flashcards.length) return;
+  const c = state.flashcards[currentFlashcardIndex];
+  if (c) {
+    c.level = Math.max(1, (c.level || 1) - 1);
+    playSound('done');
+    save();
+    $('fcNextCardBtn').click();
+  }
+});
+$('fcBtnGood').addEventListener('click', () => {
+  if (!state.flashcards || !state.flashcards.length) return;
+  const c = state.flashcards[currentFlashcardIndex];
+  if (c) {
+    c.level = (c.level || 1) + 1;
+    playSound('done');
+    save();
+    $('fcNextCardBtn').click();
+  }
+});
+$('fcBtnEasy').addEventListener('click', () => {
+  if (!state.flashcards || !state.flashcards.length) return;
+  const c = state.flashcards[currentFlashcardIndex];
+  if (c) {
+    c.level = (c.level || 1) + 2;
+    playSound('done');
+    save();
+    $('fcNextCardBtn').click();
+  }
+});
+
+// FORM: FLASHCARD
+$('flashcardForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const q = $('fcQuestionInput').value.trim();
+  const a = $('fcAnswerInput').value.trim();
+  const cat = $('fcCategoryInput').value;
+  if (!q || !a) return;
+  state.flashcards.push({
+    id: uid(),
+    category: cat,
+    question: q,
+    answer: esc(a).replace(/\n/g, '<br>'),
+    level: 1
+  });
+  e.target.reset();
+  currentFlashcardIndex = state.flashcards.length - 1;
+  save();
+  playSound('done');
+  toast('Flashcard added to deck!');
+});
+
+// WATER & HEATMAP
+function renderHeatmap() {
+  const container = $('heatmapGrid');
+  const totalDays = 16 * 7;
+  const boxes = [];
+  const now = new Date(today() + 'T12:00:00');
+
+  for (let i = totalDays - 1; i >= 0; i--) {
+    const dt = new Date(now);
+    dt.setDate(dt.getDate() - i);
+    const key = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+    const d = state.days[key];
+    const tasksDone = d ? (d.tasks || []).filter(t => t.done).length : 0;
+    const habitsDone = d ? Object.values(d.habits || {}).filter(Boolean).length : 0;
+    const totalScore = tasksDone + habitsDone;
+
+    let lvl = 'heat-lvl-0';
+    if (totalScore >= 5) lvl = 'heat-lvl-3';
+    else if (totalScore >= 3) lvl = 'heat-lvl-2';
+    else if (totalScore >= 1) lvl = 'heat-lvl-1';
+
+    boxes.push(`<div class="heat-box ${lvl}" title="${key}: ${totalScore} activities completed"></div>`);
+  }
+  container.innerHTML = boxes.join('');
+}
+
+function renderWater() {
+  const d = getTodayData();
+  const glasses = d.water || 0;
+  $('waterCounterPill').textContent = `${glasses} / 8 glasses`;
+  $('waterTotalText').textContent = `${(glasses * 0.25).toFixed(2)} Liters`;
+  const glassesHtml = [];
+  for (let i = 1; i <= 8; i++) {
+    glassesHtml.push(`<div class="water-glass ${i <= glasses ? 'filled' : ''}" data-glass="${i}" title="Glass ${i}"></div>`);
+  }
+  $('waterGlasses').innerHTML = glassesHtml.join('');
+}
+
+// RENDER: DSA
+function renderDsa() {
+  const lc = state.settings.leetcodeStats;
+  const localEasy = state.dsa.filter(d => d.difficulty === 'Easy').length;
+  const localMed = state.dsa.filter(d => d.difficulty === 'Medium').length;
+  const localHard = state.dsa.filter(d => d.difficulty === 'Hard').length;
+
+  const easy = (lc ? lc.easy : 0) + localEasy;
+  const med = (lc ? lc.medium : 0) + localMed;
+  const hard = (lc ? lc.hard : 0) + localHard;
+  const total = (lc ? lc.total : 0) + state.dsa.length;
+
+  $('dsaTotalBadge').textContent = `${total} Solved`;
+  $('dsaEasyMetric').textContent = easy;
+  $('dsaMedMetric').textContent = med;
+  $('dsaHardMetric').textContent = hard;
+  if ($('heroDsaCount')) $('heroDsaCount').textContent = total;
+
+  $('dsaProblemList').innerHTML = state.dsa.length ? state.dsa.map(p => `
+    <div class="task">
+      <div class="task-main">
+        <div class="row between">
+          <div class="task-title">${esc(p.title)}</div>
+          <span class="pill ${p.difficulty === 'Easy' ? 'green' : (p.difficulty === 'Hard' ? 'red' : 'orange')}">${esc(p.difficulty)}</span>
+        </div>
+        <div class="task-meta">
+          <span class="pill purple">${esc(p.topic)}</span>
+          <span>· Solved on ${esc(p.date)}</span>
+          ${p.link ? `<span>· <a href="${esc(p.link)}" target="_blank" rel="noopener" style="color:var(--accent)">View Problem ↗</a></span>` : ''}
+        </div>
+        ${p.notes ? `<div style="font-size:0.82rem;margin-top:6px;color:var(--ink);background:var(--bg);padding:8px 10px;border-radius:8px">${esc(p.notes)}</div>` : ''}
+      </div>
+      <button class="iconbtn" data-dsa-delete="${p.id}" title="Delete entry">×</button>
+    </div>
+  `).join('') : '<div class="empty">No DSA problems logged yet. Add your first one using the form!</div>';
+}
+
+// RENDER: KANBAN
+function renderKanban() {
+  const items = state.kanban || [];
+  const todo = items.filter(k => k.status === 'todo');
+  const inProg = items.filter(k => k.status === 'in_progress');
+  const shipped = items.filter(k => k.status === 'shipped');
+
+  $('kanbanCountTodo').textContent = todo.length;
+  $('kanbanCountInProgress').textContent = inProg.length;
+  $('kanbanCountShipped').textContent = shipped.length;
+
+  const renderCol = (list, prevStatus, nextStatus) => {
+    return list.map(item => `
+      <div class="kanban-item">
+        <h5>${esc(item.title)}</h5>
+        ${item.notes ? `<p>${esc(item.notes)}</p>` : ''}
+        <div class="kanban-item-actions">
+          <span class="pill ${item.category === 'Content' ? 'purple' : 'blue'}" style="font-size:0.7rem">${esc(item.category || 'Game Dev')}</span>
+          <div class="row" style="gap:2px">
+            ${prevStatus ? `<button class="iconbtn" data-kanban-move="${item.id}" data-target-status="${prevStatus}" title="Move back">←</button>` : ''}
+            ${nextStatus ? `<button class="iconbtn" data-kanban-move="${item.id}" data-target-status="${nextStatus}" title="Advance status">→</button>` : ''}
+            <button class="iconbtn" data-kanban-delete="${item.id}" title="Delete">×</button>
+          </div>
+        </div>
+      </div>
+    `).join('') || '<div class="empty" style="padding:12px;font-size:0.8rem">Empty</div>';
+  };
+
+  $('kanbanItemsTodo').innerHTML = renderCol(todo, null, 'in_progress');
+  $('kanbanItemsInProgress').innerHTML = renderCol(inProg, 'todo', 'shipped');
+  $('kanbanItemsShipped').innerHTML = renderCol(shipped, 'in_progress', null);
+}
+
+// RENDER: HABITS
+function renderHabits() {
+  const day = getTodayData();
+  const habits = state.habits;
+  const doneCount = habits.filter(h => day.habits[h.id]).length;
+  const pct = habits.length ? Math.round((doneCount / habits.length) * 100) : 0;
+
+  $('habitList').innerHTML = habits.map(h => {
+    const isDone = !!day.habits[h.id];
+    const streak = calculateHabitStreak(h.id);
+    return `
+      <div class="task ${isDone ? 'done' : ''}">
+        <input type="checkbox" data-habit-check="${h.id}" ${isDone ? 'checked' : ''}>
+        <div class="task-main">
+          <div class="row between">
+            <div class="task-title">${esc(h.title)}</div>
+            <span class="pill ${streak > 0 ? 'orange' : ''}">🔥 ${streak}d streak</span>
+          </div>
+          <div class="task-meta">
+            <span class="pill purple">${esc(h.area)}</span>
+          </div>
+        </div>
+        <button class="iconbtn" data-habit-delete="${h.id}" title="Delete habit">×</button>
+      </div>
+    `;
+  }).join('') || '<div class="empty">No habits added.</div>';
+
+  $('habitProgress').style.width = pct + '%';
+  $('habitCount').textContent = `${doneCount}/${habits.length} completed`;
+  $('habitPercent').textContent = pct + '%';
+}
+
+// RENDER: HEALTH
+function renderHealth() {
+  const logs = (state.weightLogs || []).sort((a,b) => b.date.localeCompare(a.date));
+  const target = state.settings.targetWeight || 75;
+  $('weightTargetMetric').textContent = `${target.toFixed(1)} kg`;
+  $('weightCountMetric').textContent = logs.length;
+
+  if (logs.length > 0) {
+    const latest = logs[0].weight;
+    $('weightLatestMetric').textContent = `${latest.toFixed(1)} kg`;
+    $('weightCurrentPill').textContent = `${latest.toFixed(1)} kg (Latest)`;
+    $('weightSvgLatestPill').textContent = `Latest: ${latest.toFixed(1)} kg (Target: ${target} kg)`;
+  } else {
+    $('weightLatestMetric').textContent = '--';
+    $('weightCurrentPill').textContent = '-- kg';
+  }
+
+  $('weightLogsList').innerHTML = logs.length ? logs.map(l => `
+    <div class="task">
+      <div class="task-main">
+        <div class="row between">
+          <strong style="font-size:1.05rem">${l.weight} kg</strong>
+          <span class="pill ${Math.abs(l.weight - target) < 1 ? 'green' : 'blue'}">
+            ${l.weight <= target ? 'Goal reached!' : `${(l.weight - target).toFixed(1)} kg to goal`}
+          </span>
+        </div>
+        <div class="task-meta">
+          <span>📅 ${esc(l.date)}</span>
+          ${l.notes ? `<span>· ${esc(l.notes)}</span>` : ''}
+        </div>
+      </div>
+      <button class="iconbtn" data-weight-delete="${l.id}" title="Delete entry">×</button>
+    </div>
+  `).join('') : '<div class="empty">No weight entries logged yet.</div>';
+}
+
+// RENDER: REVIEW
+function renderReview() {
+  const keys = Object.keys(state.reviews).sort().reverse().slice(0, 10);
+  $('recentHistory').innerHTML = keys.length ? keys.map(k => `
+    <div class="historyitem">
+      <div>
+        <strong>Week of ${esc(k)}</strong>
+        <div class="small muted">${esc(state.reviews[k].wins || 'Review saved')}</div>
+      </div>
+      <span class="pill green">Saved</span>
+    </div>
+  `).join('') : '<div class="empty">No past reviews saved yet.</div>';
+
+  const r = state.reviews[weekKey()] || {};
+  $('reviewWins').value = r.wins || '';
+  $('reviewMissed').value = r.missed || '';
+  $('reviewLesson').value = r.lesson || '';
+  $('reviewNext').value = r.next || '';
+}
+
+function weekKey() {
+  const dt = new Date(today() + 'T12:00:00');
+  dt.setDate(dt.getDate() - ((dt.getDay() + 6) % 7));
+  return dt.toISOString().slice(0, 10);
+}
+
+// RENDER: SETTINGS
+function renderSettings() {
+  $('nameInput').value = state.settings.name || 'Rohan';
+  $('accountEmailInput').value = state.settings.email || '';
+  $('pinLockInput').value = state.settings.pin || '';
+  $('workHours').value = state.settings.workHours || '';
+  $('supabaseUrlInput').value = state.settings.supabaseUrl || '';
+  $('supabaseKeyInput').value = state.settings.supabaseKey || '';
+  $('leetcodeUserInput').value = state.settings.leetcodeUsername || '';
+
+  $('brandTitle').textContent = 'GoalOS';
+  $('brandSubtitle').textContent = state.settings.workHours || 'Developer & Creator Progress System';
+  $('accountBadgeName').textContent = state.settings.name || 'Sign In';
+  $('soundToggle').textContent = state.settings.soundEnabled ? '🔔 Sound: On' : '🔕 Sound: Off';
+  document.title = 'GoalOS — Developer & Creator Progress System';
+  document.documentElement.setAttribute('data-theme', state.settings.theme || 'dark');
+}
+
+// MASTER RENDER
+function render() {
+  renderSettings();
+  renderDashboard();
+  renderAnalytics();
+  renderDsa();
+  renderGoals();
+  renderKanban();
+  renderFlashcards();
+  renderHabits();
+  renderHealth();
+  renderReview();
+}
+
+// TABS NAVIGATION
+document.querySelectorAll('[data-tab]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === b));
+    document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + b.dataset.tab));
+    if (b.dataset.tab === 'analytics') renderAnalytics();
+  });
+});
+
+$('accountBadgeBtn').addEventListener('click', () => {
+  openModal({
+    title: '👤 GoalOS User Account & Auth',
+    bodyHtml: `
+      <div style="background:var(--bg); border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:14px">
+        <div class="row between">
+          <div>
+            <strong style="font-size:1.05rem; display:block">${esc(state.settings.name || 'User')}</strong>
+            <span class="small muted">${esc(state.settings.email || 'demo@goalos.app')}</span>
+          </div>
+          <span class="pill green">Active Pro</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Display Name</label>
+        <input id="modalAccName" value="${esc(state.settings.name || '')}" placeholder="Your Full Name">
+      </div>
+      <div class="field">
+        <label>Account Email</label>
+        <input id="modalAccEmail" value="${esc(state.settings.email || '')}" placeholder="you@domain.com">
+      </div>
+      <div class="field">
+        <label>Security PIN (4 Digits)</label>
+        <input id="modalAccPin" type="password" maxlength="4" value="${esc(state.settings.pin || '')}" placeholder="4-digit PIN">
+      </div>
+      <label style="display:flex; align-items:center; gap:8px; font-size:0.83rem; cursor:pointer; margin-top:10px; padding:10px; background:var(--card); border-radius:10px; border:1px solid var(--line)">
+        <input type="checkbox" id="modalClearDemo">
+        <span>Clear sample demo data & start with fresh clean workspace</span>
+      </label>
+      <p class="small muted" style="margin-top:8px">Default demo credentials: <strong>demo@goalos.app</strong> (PIN: <strong>1234</strong>)</p>
+    `,
+    confirmText: 'Save Profile',
+    onConfirm: () => {
+      state.settings.name = $('modalAccName').value.trim() || state.settings.name;
+      state.settings.email = $('modalAccEmail').value.trim();
+      state.settings.pin = $('modalAccPin').value.trim();
+      if ($('modalClearDemo') && $('modalClearDemo').checked) {
+        state.tasks = [];
+        state.dsa = [];
+        state.weightLogs = [];
+        state.kanban = [];
+        state.flashcards = [];
+        state.days = {};
+        state.reflections = {};
+        state.reviews = {};
+        toast('Fresh account setup! Demo data cleared.');
+      } else {
+        toast('Profile updated successfully!');
+      }
+      save();
+    }
+  });
+});
+
+$('clearDemoDataBtn').addEventListener('click', () => {
+  openModal({
+    title: '🧹 Clear Demo Data?',
+    bodyHtml: '<p>This will remove sample tasks, sample DSA problems, sample weight entries, and reset to a clean blank workspace. Your user profile and settings will remain safe.</p>',
+    confirmText: 'Clear Demo Data',
+    onConfirm: () => {
+      state.tasks = [];
+      state.dsa = [];
+      state.weightLogs = [];
+      state.kanban = [];
+      state.flashcards = [];
+      state.days = {};
+      state.reflections = {};
+      state.reviews = {};
+      save();
+      toast('Demo data cleared! Workspace is now fresh.');
+    }
+  });
+});
+
+// TASK FILTER CHIPS
+$('taskFilters').addEventListener('click', e => {
+  if (e.target.matches('.filter-chip')) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    e.target.classList.add('active');
+    currentTaskFilter = e.target.dataset.filter;
+    renderDashboard();
+  }
+});
+
+// ADD TASK
+$('addTask').addEventListener('click', () => {
+  const title = $('newTaskTitle').value.trim();
+  if (!title) return;
+  const category = $('newTaskCategory').value;
+  const priority = $('newTaskPriority').value;
+  getTodayData().tasks.push({
+    id: uid(),
+    title,
+    category,
+    priority,
+    note: '',
+    done: false
+  });
+  $('newTaskTitle').value = '';
+  save();
+  toast('Task added');
+});
+$('newTaskTitle').addEventListener('keydown', e => {
+  if (e.key === 'Enter') $('addTask').click();
+});
+
+// EVENT DELEGATION
+document.addEventListener('change', e => {
+  if (e.target.matches('[data-task-check]')) {
+    const t = getTodayData().tasks.find(x => String(x.id) === e.target.dataset.taskCheck);
+    if (t) {
+      t.done = e.target.checked;
+      if (t.done) {
+        playSound('done');
+        const day = getTodayData();
+        const allDone = day.tasks.length > 0 && day.tasks.every(item => item.done);
+        if (allDone) launchConfetti();
+      }
+      save();
+    }
+  }
+  if (e.target.matches('[data-habit-check]')) {
+    getTodayData().habits[e.target.dataset.habitCheck] = e.target.checked;
+    if (e.target.checked) playSound('done');
+    save();
+  }
+});
+
+document.addEventListener('click', e => {
+  // Task delete
+  const delTask = e.target.closest('[data-task-delete]');
+  if (delTask) {
+    const id = delTask.dataset.taskDelete;
+    getTodayData().tasks = getTodayData().tasks.filter(x => String(x.id) !== id);
+    save();
+    toast('Task deleted');
+    return;
+  }
+
+  // Task edit
+  const editTask = e.target.closest('[data-task-edit]');
+  if (editTask) {
+    const t = getTodayData().tasks.find(x => String(x.id) === editTask.dataset.taskEdit);
+    if (t) {
+      openModal({
+        title: 'Edit Task',
+        bodyHtml: `
+          <div class="field"><label>Task Title</label><input id="editTaskTitle" value="${esc(t.title)}"></div>
+          <div class="field"><label>Priority</label><select id="editTaskPriority"><option value="high" ${t.priority === 'high' ? 'selected' : ''}>🔴 High</option><option value="med" ${t.priority === 'med' ? 'selected' : ''}>🟡 Medium</option><option value="low" ${t.priority === 'low' ? 'selected' : ''}>🟢 Low</option></select></div>
+          <div class="field"><label>Note</label><input id="editTaskNote" value="${esc(t.note || '')}"></div>
+        `,
+        confirmText: 'Save',
+        onConfirm: () => {
+          t.title = $('editTaskTitle').value.trim() || t.title;
+          t.priority = $('editTaskPriority').value;
+          t.note = $('editTaskNote').value.trim();
+          save();
+          toast('Task updated');
+        }
+      });
+    }
+    return;
+  }
+
+  // Goal delete
+  const delGoal = e.target.closest('[data-goal-delete]');
+  if (delGoal) {
+    const id = delGoal.dataset.goalDelete;
+    openModal({
+      title: 'Delete Goal',
+      bodyHtml: '<p>Remove this goal and all its sub-milestones from your roadmap?</p>',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        state.goals = state.goals.filter(g => String(g.id) !== id);
+        save();
+        toast('Goal deleted');
+      }
+    });
+    return;
+  }
+
+  // Goal subtask delete
+  const delSub = e.target.closest('[data-subtask-delete]');
+  if (delSub) {
+    const [goalId, subId] = delSub.dataset.subtaskDelete.split(':');
+    const goal = state.goals.find(g => String(g.id) === goalId);
+    if (goal && goal.subtasks) {
+      goal.subtasks = goal.subtasks.filter(s => String(s.id) !== subId);
+      const doneSub = goal.subtasks.filter(s => s.done).length;
+      goal.progress = goal.subtasks.length ? Math.round((doneSub / goal.subtasks.length) * 100) : 0;
+      save();
+      toast('Sub-milestone removed');
+    }
+    return;
+  }
+
+  // Habit delete
+  const delHabit = e.target.closest('[data-habit-delete]');
+  if (delHabit) {
+    const id = delHabit.dataset.habitDelete;
+    state.habits = state.habits.filter(h => String(h.id) !== id);
+    if (getTodayData().habits) {
+      delete getTodayData().habits[id];
+    }
+    save();
+    toast('Habit removed');
+    return;
+  }
+
+  // Weight entry delete
+  const delWeight = e.target.closest('[data-weight-delete]');
+  if (delWeight) {
+    const id = delWeight.dataset.weightDelete;
+    state.weightLogs = (state.weightLogs || []).filter(l => String(l.id) !== id);
+    save();
+    toast('Weight entry removed');
+    return;
+  }
+
+  // Kanban card delete
+  const delKanban = e.target.closest('[data-kanban-delete]');
+  if (delKanban) {
+    const id = delKanban.dataset.kanbanDelete;
+    state.kanban = (state.kanban || []).filter(k => String(k.id) !== id);
+    save();
+    toast('Milestone removed');
+    return;
+  }
+
+  // Flashcard delete
+  const delFc = e.target.closest('[data-fc-delete]');
+  if (delFc) {
+    const id = delFc.dataset.fcDelete;
+    state.flashcards = state.flashcards.filter(c => String(c.id) !== id);
+    save();
+    toast('Flashcard removed');
+    return;
+  }
+
+  // Jump to Flashcard
+  const jumpFc = e.target.closest('[data-fc-jump]');
+  if (jumpFc) {
+    currentFlashcardIndex = Number(jumpFc.dataset.fcJump) || 0;
+    renderFlashcards();
+    const cardEl = $('activeFlashcard');
+    if (cardEl) cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    toast('Loaded card ' + (currentFlashcardIndex + 1));
+    return;
+  }
+
+  // DSA problem delete
+  const delDsa = e.target.closest('[data-dsa-delete]');
+  if (delDsa) {
+    const id = delDsa.dataset.dsaDelete;
+    state.dsa = state.dsa.filter(p => String(p.id) !== id);
+    save();
+    toast('Problem removed');
+    return;
+  }
+
+  // Move Kanban
+  const moveKanban = e.target.closest('[data-kanban-move]');
+  if (moveKanban) {
+    const id = moveKanban.dataset.kanbanMove;
+    const targetStatus = moveKanban.dataset.targetStatus;
+    const item = state.kanban.find(k => String(k.id) === id);
+    if (item) {
+      item.status = targetStatus;
+      if (targetStatus === 'shipped') {
+        playSound('done');
+        launchConfetti();
+      }
+      save();
+      toast('Item moved');
+    }
+  }
+
+  // Water glass
+  const glass = e.target.closest('[data-glass]');
+  if (glass) {
+    const num = Number(glass.dataset.glass);
+    getTodayData().water = num;
+    playSound('done');
+    save();
+  }
+});
+
+// WATER BUTTONS
+$('addWaterBtn').addEventListener('click', () => {
+  const d = getTodayData();
+  d.water = Math.min(16, (d.water || 0) + 1);
+  playSound('done');
+  save();
+});
+$('removeWaterBtn').addEventListener('click', () => {
+  const d = getTodayData();
+  d.water = Math.max(0, (d.water || 0) - 1);
+  save();
+});
+
+// FORM: DSA PROBLEM
+$('dsaForm').addEventListener('submit', e => {
+  e.preventDefault();
+  state.dsa.unshift({
+    id: uid(),
+    title: $('dsaTitle').value.trim(),
+    difficulty: $('dsaDifficulty').value,
+    topic: $('dsaTopic').value,
+    date: today(),
+    link: $('dsaLink').value.trim(),
+    notes: $('dsaNotes').value.trim()
+  });
+  e.target.reset();
+  playSound('done');
+  save();
+  toast('Problem logged!');
+});
+
+// FORM: GOALS
+$('goalForm').addEventListener('submit', e => {
+  e.preventDefault();
+  state.goals.push({
+    id: uid(),
+    title: $('goalTitle').value.trim(),
+    area: $('goalArea').value,
+    why: $('goalWhy').value.trim(),
+    target: $('goalTarget').value,
+    progress: Math.max(0, Math.min(100, Number($('goalProgress').value) || 0)),
+    subtasks: []
+  });
+  e.target.reset();
+  $('goalProgress').value = 0;
+  save();
+  toast('Goal created!');
+});
+
+// FORM: HABITS
+$('habitForm').addEventListener('submit', e => {
+  e.preventDefault();
+  state.habits.push({
+    id: uid(),
+    title: $('habitTitle').value.trim(),
+    area: $('habitArea').value
+  });
+  e.target.reset();
+  save();
+  toast('Habit added!');
+});
+
+// FORM: WEIGHT
+$('weightForm').addEventListener('submit', e => {
+  e.preventDefault();
+  state.weightLogs.unshift({
+    id: uid(),
+    date: $('weightDate').value,
+    weight: Number($('weightValue').value),
+    notes: $('weightNotes').value.trim()
+  });
+  $('weightValue').value = '';
+  $('weightNotes').value = '';
+  save();
+  toast('Weight logged!');
+});
+
+// NEW KANBAN MODAL
+$('addKanbanBtn').addEventListener('click', () => {
+  openModal({
+    title: 'New Milestone Item',
+    bodyHtml: `
+      <div class="field"><label>Milestone Title</label><input id="newKanbanTitle" required placeholder="e.g. Implement Inventory UI"></div>
+      <div class="field"><label>Category</label><select id="newKanbanCategory"><option>Game Engineering</option><option>Content</option><option>Systems & Shaders</option><option>Release / Deploy</option></select></div>
+      <div class="field"><label>Details / Scope</label><textarea id="newKanbanNotes" placeholder="What is the definition of done?"></textarea></div>
+    `,
+    confirmText: 'Create Item',
+    onConfirm: () => {
+      const title = $('newKanbanTitle').value.trim();
+      if (!title) return;
+      state.kanban.push({
+        id: uid(),
+        title,
+        category: $('newKanbanCategory').value,
+        notes: $('newKanbanNotes').value.trim(),
+        status: 'todo'
+      });
+      save();
+      toast('Item added to backlog');
+    }
+  });
+});
+
+// REFLECTION & REVIEW
+$('saveReflection').addEventListener('click', () => {
+  state.reflections[today()] = { win: $('win').value.trim(), blocker: $('blocker').value.trim() };
+  save();
+  toast('Reflection saved');
+});
+$('saveReview').addEventListener('click', () => {
+  state.reviews[weekKey()] = { wins: $('reviewWins').value.trim(), missed: $('reviewMissed').value.trim(), lesson: $('reviewLesson').value.trim(), next: $('reviewNext').value.trim() };
+  save();
+  toast('Weekly review saved');
+});
+
+// THEME TOGGLES
+$('themeToggle').addEventListener('click', () => {
+  state.settings.theme = state.settings.theme === 'dark' ? 'light' : 'dark';
+  save();
+});
+$('soundToggle').addEventListener('click', () => {
+  state.settings.soundEnabled = !state.settings.soundEnabled;
+  save();
+  toast(state.settings.soundEnabled ? 'Sound enabled' : 'Sound muted');
+});
+
+// POMODORO TIMER
+let timerInterval = null;
+let timerSecondsLeft = 25 * 60;
+let timerRunning = false;
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerSecondsLeft / 60);
+  const s = timerSecondsLeft % 60;
+  $('timerDisplay').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+document.querySelectorAll('.timer-mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.timer-mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    clearInterval(timerInterval);
+    timerRunning = false;
+    $('timerStartBtn').textContent = 'Start';
+    $('timerStatusPill').textContent = 'Ready';
+    timerSecondsLeft = Number(btn.dataset.time) * 60;
+    updateTimerDisplay();
+  });
+});
+
+$('timerStartBtn').addEventListener('click', () => {
+  if (timerRunning) return;
+  timerRunning = true;
+  $('timerStartBtn').textContent = 'Running';
+  $('timerStatusPill').textContent = 'Focusing 🔥';
+  timerInterval = setInterval(() => {
+    if (timerSecondsLeft > 0) {
+      timerSecondsLeft--;
+      updateTimerDisplay();
+    } else {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      $('timerStartBtn').textContent = 'Start';
+      $('timerStatusPill').textContent = 'Session Complete! 🎉';
+      playSound('timer');
+      launchConfetti();
+      toast('Focus session finished!');
+    }
+  }, 1000);
+});
+
+$('timerPauseBtn').addEventListener('click', () => {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  $('timerStartBtn').textContent = 'Resume';
+  $('timerStatusPill').textContent = 'Paused';
+});
+
+$('timerResetBtn').addEventListener('click', () => {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  const activeBtn = document.querySelector('.timer-mode-btn.active');
+  timerSecondsLeft = (activeBtn ? Number(activeBtn.dataset.time) : 25) * 60;
+  $('timerStartBtn').textContent = 'Start';
+  $('timerStatusPill').textContent = 'Ready';
+  updateTimerDisplay();
+});
+
+// BACKUP & EXPORT
+function downloadFile(name, text, type) {
+  const a = document.createElement('a');
+  const url = URL.createObjectURL(new Blob([text], { type }));
+  a.href = url;
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+$('exportBackup').addEventListener('click', () => downloadFile(`goal-os-backup-${today()}.json`, JSON.stringify(state, null, 2), 'application/json'));
+$('exportTasks').addEventListener('click', () => {
+  const rows = [['date', 'title', 'category', 'priority', 'done', 'note']];
+  Object.entries(state.days).forEach(([date, v]) => (v.tasks || []).forEach(t => rows.push([date, t.title, t.category || '', t.priority || 'med', !!t.done, t.note || ''])));
+  downloadFile('goal-os-tasks.csv', rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\r\n'), 'text/csv');
+});
+$('exportDsa').addEventListener('click', () => {
+  const rows = [['title', 'difficulty', 'topic', 'date', 'link', 'notes']];
+  state.dsa.forEach(d => rows.push([d.title, d.difficulty, d.topic, d.date, d.link || '', d.notes || '']));
+  downloadFile('goal-os-dsa-problems.csv', rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\r\n'), 'text/csv');
+});
+
+$('importBackup').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    const obj = JSON.parse(await file.text());
+    if (!obj.goals || !obj.days) throw new Error();
+    openModal({
+      title: 'Confirm Backup Import',
+      bodyHtml: '<p>Replace current tracker data with this backup file?</p>',
+      confirmText: 'Import & Restore',
+      onConfirm: () => {
+        state = { ...clone(defaults), ...obj };
+        save();
+        toast('Backup successfully restored!');
+      }
+    });
+  } catch(err) {
+    alert('Invalid Goal OS backup file');
+  }
+  e.target.value = '';
+});
+
+$('resetAll').addEventListener('click', () => {
+  openModal({
+    title: 'Reset All Tracker Data?',
+    bodyHtml: '<p style="color:var(--red)"><strong>Warning:</strong> This will wipe all data. A safety backup will automatically download before reset.</p>',
+    confirmText: 'Reset Everything',
+    onConfirm: () => {
+      downloadFile(`goal-os-safety-backup-${today()}.json`, JSON.stringify(state, null, 2), 'application/json');
+      state = clone(defaults);
+      localStorage.removeItem('goalOS_v1');
+      save();
+      toast('Tracker reset (Safety backup saved to Downloads)');
+    }
+  });
+});
+
+// Check PIN lock security on startup
+function checkPinOnStartup() {
+  if (state.settings.pin && state.settings.pin.trim()) {
+    openModal({
+      title: '🔒 GoalOS Security Lock',
+      bodyHtml: `
+        <div class="field">
+          <label>Enter 4-Digit PIN</label>
+          <input id="startupPinInput" type="password" maxlength="4" placeholder="Enter PIN">
+        </div>
+        <p class="small muted" style="margin-top:6px">Hint: Default Demo PIN is <strong>1234</strong> (can be changed in settings)</p>
+      `,
+      showCancel: false,
+      confirmText: 'Unlock Dashboard',
+      onConfirm: () => {
+        const inp = $('startupPinInput');
+        const entered = inp ? inp.value.trim() : '';
+        if (entered !== state.settings.pin) {
+          toast('Incorrect PIN! Default demo is 1234.');
+          if (inp) {
+            inp.value = '';
+            inp.focus();
+          }
+        } else {
+          forceCloseModal();
+          toast('Unlocked successfully');
+        }
+      }
+    });
+  }
+}
+
+// Keyboard shortcuts for desktop power-users
+document.addEventListener('keydown', e => {
+  const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+  if (isInput) return;
+
+  if (e.key === 't' || e.key === 'T') {
+    $('themeToggle').click();
+  } else if (e.key === 'n' || e.key === 'N') {
+    e.preventDefault();
+    document.querySelector('.tab[data-tab="dashboard"]').click();
+    $('newTaskTitle').focus();
+  } else if (e.key === ' ') {
+    e.preventDefault();
+    if (timerRunning) $('timerPauseBtn').click();
+    else $('timerStartBtn').click();
+  } else if (e.key === '?') {
+    openModal({
+      title: '⌨️ Keyboard Shortcuts',
+      bodyHtml: `
+        <div class="stack" style="gap:8px; font-size:0.86rem">
+          <div class="row between"><span>Add New Task</span><strong class="pill">N</strong></div>
+          <div class="row between"><span>Start / Pause Timer</span><strong class="pill">Space</strong></div>
+          <div class="row between"><span>Toggle Dark / Light Theme</span><strong class="pill">T</strong></div>
+          <div class="row between"><span>Quick Switch Tabs</span><strong class="pill">1 – 9</strong></div>
+        </div>
+      `,
+      confirmText: 'Got It'
+    });
+  } else if (e.key >= '1' && e.key <= '9') {
+    const tabs = document.querySelectorAll('.tab');
+    const idx = Number(e.key) - 1;
+    if (tabs[idx]) tabs[idx].click();
+  }
+});
+
+// Register Service Worker for 100% Offline PWA functionality
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+
+$('weightDate').value = today();
+
+// INITIALIZE
+load();
+render();
+checkPinOnStartup();
 })();
 </script>
 </body>
