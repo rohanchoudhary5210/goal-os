@@ -1383,7 +1383,11 @@ function load() {
 }
 
 function save() {
-  localStorage.setItem('goalOS_v1', JSON.stringify(state));
+  try {
+    localStorage.setItem('goalOS_v1', JSON.stringify(state));
+  } catch(e) {
+    console.error('Storage save error:', e);
+  }
   render();
 }
 
@@ -1927,36 +1931,62 @@ function renderDsaMatrix() {
 
 // LIVE LEETCODE SYNC
 $('syncLeetcodeBtn').addEventListener('click', async () => {
-  const username = $('leetcodeUserInput').value.trim() || state.settings.leetcodeUsername;
+  const username = ($('leetcodeUserInput').value.trim() || state.settings.leetcodeUsername || '').trim();
   if (!username) {
     toast('Please enter a LeetCode username first');
+    $('leetcodeUserInput').focus();
     return;
   }
   state.settings.leetcodeUsername = username;
   save();
 
   $('syncLeetcodeBtn').textContent = 'Fetching...';
+  let fetchedData = null;
+
+  // Endpoint 1: alfa-leetcode-api (Render)
   try {
-    const res = await fetch(`https://leetcode-stats-api.herokuapp.com/${username}`);
-    const data = await res.json();
-    if (data.status === 'success' || data.totalSolved !== undefined) {
-      state.settings.leetcodeStats = {
-        easy: Number(data.easySolved) || 0,
-        medium: Number(data.mediumSolved) || 0,
-        hard: Number(data.hardSolved) || 0,
-        total: Number(data.totalSolved) || 0
-      };
-      save();
-      toast(`Synced: ${data.totalSolved} problems solved on LeetCode!`);
-      playSound('done');
-      launchConfetti();
-    } else {
-      toast('Could not find user or profile is private');
+    const res1 = await fetch(`https://alfa-leetcode-api.onrender.com/${encodeURIComponent(username)}/solved`);
+    if (res1.ok) {
+      const data1 = await res1.json();
+      if (data1 && (data1.solvedProblem !== undefined || data1.easySolved !== undefined)) {
+        fetchedData = {
+          total: Number(data1.solvedProblem ?? data1.totalSolved) || 0,
+          easy: Number(data1.easySolved) || 0,
+          medium: Number(data1.mediumSolved) || 0,
+          hard: Number(data1.hardSolved) || 0
+        };
+      }
     }
-  } catch(e) {
-    toast('LeetCode sync completed from local logs');
-  } finally {
-    $('syncLeetcodeBtn').textContent = '🔄 Sync Live Stats';
+  } catch(e) {}
+
+  // Endpoint 2: faisalshohag fallback (Vercel)
+  if (!fetchedData) {
+    try {
+      const res2 = await fetch(`https://leetcode-api-faisalshohag.vercel.app/${encodeURIComponent(username)}`);
+      if (res2.ok) {
+        const data2 = await res2.json();
+        if (data2 && (data2.totalSolved !== undefined || data2.easySolved !== undefined)) {
+          fetchedData = {
+            total: Number(data2.totalSolved ?? data2.solvedProblem) || 0,
+            easy: Number(data2.easySolved) || 0,
+            medium: Number(data2.mediumSolved) || 0,
+            hard: Number(data2.hardSolved) || 0
+          };
+        }
+      }
+    } catch(e) {}
+  }
+
+  $('syncLeetcodeBtn').textContent = '🔄 Sync Live Stats';
+
+  if (fetchedData) {
+    state.settings.leetcodeStats = fetchedData;
+    save();
+    toast(`Synced: ${fetchedData.total} problems solved on LeetCode!`);
+    playSound('done');
+    launchConfetti();
+  } else {
+    toast(`Could not find LeetCode profile "${username}". Check spelling.`);
   }
 });
 
@@ -2059,11 +2089,11 @@ document.addEventListener('click', e => {
 
 // CLOUD & ACCOUNT SETTINGS
 $('saveAccountSettingsBtn').addEventListener('click', () => {
-  state.settings.name = $('nameInput').value.trim() || 'Rohan';
-  state.settings.email = $('accountEmailInput').value.trim();
+  state.settings.name = $('nameInput').value.trim() || state.settings.name || 'Rohan';
+  state.settings.email = $('accountEmailInput').value.trim() || state.settings.email || 'demo@goalos.app';
   state.settings.pin = $('pinLockInput').value.trim();
   state.settings.workHours = $('workHours').value.trim();
-  state.settings.supabaseUrl = $('supabaseUrlInput').value.trim();
+  state.settings.supabaseUrl = cleanSupabaseUrl($('supabaseUrlInput').value);
   state.settings.supabaseKey = $('supabaseKeyInput').value.trim();
 
   $('accountBadgeName').textContent = state.settings.name;
@@ -2071,73 +2101,174 @@ $('saveAccountSettingsBtn').addEventListener('click', () => {
   toast('Account preferences saved');
 });
 
-const cleanSupabaseUrl = raw => raw.trim().replace(/\/rest\/v1\/?$/i, '').replace(/\/+$/, '');
+const cleanSupabaseUrl = raw => String(raw || '').trim().replace(/\/rest\/v1\/?$/i, '').replace(/\/+$/, '');
 
+// PUSH / SYNC TO SUPABASE
 $('testCloudSyncBtn').addEventListener('click', async () => {
   const url = cleanSupabaseUrl($('supabaseUrlInput').value);
   const key = $('supabaseKeyInput').value.trim();
+  const email = $('accountEmailInput').value.trim() || state.settings.email || 'demo@goalos.app';
+
   if (!url || !key) {
-    toast('Please enter Supabase URL and Key first');
+    openModal({
+      title: 'Missing Supabase Details',
+      bodyHtml: '<p>Please enter your <strong>Supabase Project URL</strong> and <strong>Anon Public Key</strong> first.</p>',
+      confirmText: 'OK'
+    });
     return;
   }
+
+  // Persist credentials locally
   state.settings.supabaseUrl = url;
   state.settings.supabaseKey = key;
+  state.settings.email = email;
   save();
 
-  $('testCloudSyncBtn').textContent = 'Pushing...';
+  $('testCloudSyncBtn').textContent = 'Connecting...';
   try {
-    const email = state.settings.email || 'demo@goalos.app';
-    const res = await fetch(`${url}/rest/v1/goalos_sync`, {
-      method: 'POST',
-      headers: {
-        'apikey': key,
-        'Authorization': `Bearer ${key}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates'
-      },
-      body: JSON.stringify({
-        user_id: email,
-        data: state,
-        updated_at: new Date().toISOString()
-      })
+    // 1. Verify project & credentials
+    const pingRes = await fetch(`${url}/rest/v1/`, {
+      headers: { 'apikey': key, 'Authorization': `Bearer ${key}` }
     });
 
-    if (res.ok || res.status === 201 || res.status === 204) {
+    if (pingRes.status === 401) {
+      openModal({
+        title: '❌ Invalid Supabase API Key',
+        bodyHtml: '<p style="color:var(--red)">Supabase rejected the Anon Key (Status 401).</p><p class="small muted">Please copy the <strong>anon public</strong> key from Supabase Dashboard (Settings → API Keys). Make sure you did not copy the secret key.</p>',
+        confirmText: 'Understood'
+      });
+      return;
+    }
+
+    if (!pingRes.ok && pingRes.status !== 404 && pingRes.status !== 200) {
+      openModal({
+        title: '❌ Supabase Connection Failed',
+        bodyHtml: `<p style="color:var(--red)">Could not connect to: <code>${esc(url)}</code> (Status: ${pingRes.status})</p>`,
+        confirmText: 'OK'
+      });
+      return;
+    }
+
+    // 2. Check if table 'goalos_sync' exists
+    const checkTable = await fetch(`${url}/rest/v1/goalos_sync?user_id=eq.${encodeURIComponent(email)}&select=user_id`, {
+      headers: { 'apikey': key, 'Authorization': `Bearer ${key}` }
+    });
+
+    if (checkTable.status === 404) {
+      openModal({
+        title: '⚠️ Table Not Found',
+        bodyHtml: `
+          <p>Table <strong>"goalos_sync"</strong> does not exist in your Supabase database yet.</p>
+          <p class="small muted">Click below to view the 1-minute SQL query to create the table.</p>
+        `,
+        confirmText: 'View SQL Query',
+        onConfirm: () => $('showSupabaseSqlLink').click()
+      });
+      return;
+    }
+
+    if (checkTable.status === 401 || checkTable.status === 403) {
+      const err = await checkTable.json().catch(() => ({}));
+      openModal({
+        title: '⚠️ Row-Level Security (RLS) Error',
+        bodyHtml: `
+          <p style="color:var(--red)">Supabase permission error: ${esc(err.message || 'Row Level Security policy blocked request')}</p>
+          <p>To fix this instantly, run this in Supabase SQL Editor:</p>
+          <pre style="background:var(--bg); padding:10px; border-radius:8px; border:1px solid var(--line); font-size:0.8rem">alter table goalos_sync disable row level security;</pre>
+        `,
+        confirmText: 'Got It'
+      });
+      return;
+    }
+
+    $('testCloudSyncBtn').textContent = 'Uploading...';
+    const existing = await checkTable.json().catch(() => []);
+    let writeRes;
+
+    if (existing && existing.length > 0) {
+      // Row exists -> UPDATE (PATCH)
+      writeRes = await fetch(`${url}/rest/v1/goalos_sync?user_id=eq.${encodeURIComponent(email)}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': key,
+          'Authorization': `Bearer ${key}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          data: state,
+          updated_at: new Date().toISOString()
+        })
+      });
+    } else {
+      // Row doesn't exist -> INSERT (POST)
+      writeRes = await fetch(`${url}/rest/v1/goalos_sync`, {
+        method: 'POST',
+        headers: {
+          'apikey': key,
+          'Authorization': `Bearer ${key}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          user_id: email,
+          data: state,
+          updated_at: new Date().toISOString()
+        })
+      });
+    }
+
+    if (writeRes.ok || writeRes.status === 201 || writeRes.status === 204) {
+      if ($('cloudSyncStatusBadge')) {
+        $('cloudSyncStatusBadge').textContent = 'Cloud Synced ✅';
+        $('cloudSyncStatusBadge').className = 'pill green';
+      }
       toast('✅ Cloud Backup Successful! Data synced to Supabase.');
       playSound('done');
+      launchConfetti();
     } else {
-      // Table might not be created yet, test ping
-      const ping = await fetch(`${url}/rest/v1/`, { headers: { apikey: key } });
-      if (ping.ok || ping.status === 404 || ping.status === 200) {
-        toast('Connected! Please run SQL script to create table "goalos_sync".');
-        $('showSupabaseSqlLink').click();
-      } else {
-        toast('Connection failed. Please check your Supabase Project URL & Key.');
-      }
+      const errData = await writeRes.json().catch(() => ({}));
+      openModal({
+        title: '⚠️ Supabase Sync Error',
+        bodyHtml: `
+          <p style="color:var(--red)">Failed to save to Supabase: <strong>${esc(errData.message || writeRes.statusText)}</strong></p>
+          <p class="small muted">If RLS is blocking access, run: <code>alter table goalos_sync disable row level security;</code> in Supabase SQL editor.</p>
+        `,
+        confirmText: 'OK'
+      });
     }
   } catch(e) {
-    toast('Cloud sync network error');
+    openModal({
+      title: 'Network / CORS Error',
+      bodyHtml: `<p style="color:var(--red)">Could not reach Supabase: ${esc(e.message)}</p><p class="small muted">Please check your internet connection and verify Project URL.</p>`,
+      confirmText: 'OK'
+    });
   } finally {
     $('testCloudSyncBtn').textContent = '☁️ Push to Cloud (Sync)';
   }
 });
 
+// PULL / RESTORE FROM SUPABASE
 $('pullCloudSyncBtn').addEventListener('click', async () => {
   const url = cleanSupabaseUrl($('supabaseUrlInput').value);
   const key = $('supabaseKeyInput').value.trim();
+  const email = $('accountEmailInput').value.trim() || state.settings.email || 'demo@goalos.app';
+
   if (!url || !key) {
-    toast('Please enter Supabase URL and Key first');
+    openModal({
+      title: 'Missing Supabase Details',
+      bodyHtml: '<p>Please enter your <strong>Supabase Project URL</strong> and <strong>Anon Public Key</strong> first.</p>',
+      confirmText: 'OK'
+    });
     return;
   }
-  const email = state.settings.email || 'demo@goalos.app';
+
   $('pullCloudSyncBtn').textContent = 'Restoring...';
   try {
     const res = await fetch(`${url}/rest/v1/goalos_sync?user_id=eq.${encodeURIComponent(email)}&select=*`, {
-      headers: {
-        'apikey': key,
-        'Authorization': `Bearer ${key}`
-      }
+      headers: { 'apikey': key, 'Authorization': `Bearer ${key}` }
     });
+
     if (res.ok) {
       const rows = await res.json();
       if (rows && rows.length && rows[0].data) {
@@ -2147,18 +2278,32 @@ $('pullCloudSyncBtn').addEventListener('click', async () => {
         playSound('done');
         launchConfetti();
       } else {
-        toast('No cloud backup found for ' + email);
+        openModal({
+          title: 'No Cloud Data Found',
+          bodyHtml: `<p>No cloud backup found for email: <strong>${esc(email)}</strong>.</p><p class="small muted">Make sure you clicked "Push to Cloud (Sync)" on your other device first using this same email address.</p>`,
+          confirmText: 'OK'
+        });
       }
     } else {
-      toast('Could not find table "goalos_sync" in Supabase.');
+      const err = await res.json().catch(() => ({}));
+      openModal({
+        title: 'Restore Failed',
+        bodyHtml: `<p style="color:var(--red)">Error: ${esc(err.message || res.statusText)}</p>`,
+        confirmText: 'OK'
+      });
     }
   } catch(e) {
-    toast('Error restoring from Supabase');
+    openModal({
+      title: 'Connection Error',
+      bodyHtml: `<p style="color:var(--red)">Could not connect to Supabase: ${esc(e.message)}</p>`,
+      confirmText: 'OK'
+    });
   } finally {
     $('pullCloudSyncBtn').textContent = '📥 Restore from Cloud';
   }
 });
 
+// SQL SETUP MODAL
 $('showSupabaseSqlLink').addEventListener('click', () => {
   openModal({
     title: '⚡ 1-Minute Supabase Database Setup',
@@ -2166,24 +2311,23 @@ $('showSupabaseSqlLink').addEventListener('click', () => {
       <div style="font-size:0.87rem; line-height:1.55; color:var(--ink)">
         <p>Follow these 3 quick steps on your free <strong>Supabase</strong> project:</p>
         <ol style="padding-left:18px; margin:10px 0">
-          <li>Open your Supabase project (<a href="https://supabase.com/dashboard" target="_blank" rel="noopener" style="color:var(--accent); font-weight:700">supabase.com/dashboard ↗</a>).</li>
+          <li>Open your project at <a href="https://supabase.com/dashboard" target="_blank" rel="noopener" style="color:var(--accent); font-weight:700">supabase.com/dashboard ↗</a>.</li>
           <li>Click <strong>SQL Editor</strong> on the left sidebar.</li>
-          <li>Paste and run this query (Click <strong>Run</strong>):</li>
+          <li>Paste and run this query (Click green <strong>Run</strong> button):</li>
         </ol>
-        <pre style="background:var(--bg); padding:10px; border-radius:10px; font-size:0.78rem; overflow-x:auto; border:1px solid var(--line); color:var(--ink); user-select:all">
-create table if not exists goalos_sync (
+        <pre id="supabaseSqlSnippet" style="background:var(--bg); padding:12px; border-radius:10px; font-size:0.78rem; overflow-x:auto; border:1px solid var(--line); color:var(--ink); user-select:all">create table if not exists goalos_sync (
   user_id text primary key,
   data jsonb not null,
   updated_at timestamp with time zone default timezone('utc'::text, now())
 );
 
-alter table goalos_sync enable row level security;
-create policy "Allow public sync" on goalos_sync for all using (true) with check (true);
-        </pre>
-        <p class="small muted" style="margin-top:8px">4. Copy your <strong>Project URL</strong> and <strong>anon public API key</strong> from <strong>Project Settings → API</strong> into the fields below.</p>
+alter table goalos_sync disable row level security;</pre>
+        <div style="margin-top:10px; display:flex; gap:8px; align-items:center">
+          <button class="btn sm secondary" type="button" onclick="navigator.clipboard.writeText($('supabaseSqlSnippet').textContent); alert('SQL copied to clipboard!');">📋 Copy SQL Query</button>
+        </div>
       </div>
     `,
-    confirmText: 'Got It'
+    confirmText: 'Close'
   });
 });
 
@@ -2625,14 +2769,17 @@ $('addTask').addEventListener('click', () => {
   if (!title) return;
   const category = $('newTaskCategory').value;
   const priority = $('newTaskPriority').value;
-  getTodayData().tasks.push({
+  const taskObj = {
     id: uid(),
     title,
     category,
     priority,
     note: '',
     done: false
-  });
+  };
+  getTodayData().tasks.push(taskObj);
+  if (!state.tasks) state.tasks = [];
+  state.tasks.push(clone(taskObj));
   $('newTaskTitle').value = '';
   save();
   toast('Task added');
@@ -2669,6 +2816,7 @@ document.addEventListener('click', e => {
   if (delTask) {
     const id = delTask.dataset.taskDelete;
     getTodayData().tasks = getTodayData().tasks.filter(x => String(x.id) !== id);
+    if (state.tasks) state.tasks = state.tasks.filter(x => String(x.id) !== id);
     save();
     toast('Task deleted');
     return;
