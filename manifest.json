@@ -1,0 +1,17 @@
+{
+  "name": "Goal OS — Personal Goal Tracker",
+  "short_name": "Goal OS",
+  "description": "Personal progress system for Game Engineering, DSA practice, Content, and Health.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%236366f1'/><text x='50' y='68' font-size='55' font-family='system-ui,sans-serif' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
